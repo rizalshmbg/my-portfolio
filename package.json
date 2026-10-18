@@ -42,9 +42,9 @@
 		"@threlte/core": "^8.6.1",
 		"@threlte/extras": "^9.22.2",
 		"three": "^0.186.1"
-	}
+	},
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/*": "./src/lib/*"
-	},
+	}
 }

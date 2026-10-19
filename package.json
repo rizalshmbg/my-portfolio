@@ -49,6 +49,6 @@
 	"imports": {
 		"#lib": "./src/lib/index.js",
 		"#lib/*": "./src/lib/*",
-		"#components/*": ".src/components/*"
+		"#components/*": ".src/lib/components/*"
 	}
 }

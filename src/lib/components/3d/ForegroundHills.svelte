@@ -115,7 +115,7 @@
 			x: -18,
 			y: -0.5,
 			z: 2,
-			color: '#a4adba',
+			color: '#aeb9c8',
 			seed: 10,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -129,7 +129,7 @@
 			x: -6,
 			y: -4,
 			z: -9,
-			color: '#737f91',
+			color: '#7d8b9f',
 			seed: 100,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -143,7 +143,7 @@
 			x: 7,
 			y: -2.5,
 			z: 5,
-			color: '#b6bfcc',
+			color: '#c4ccd6',
 			seed: 28,
 			ridgeOffset: 1.5,
 			ridgeWidth: 6
@@ -157,7 +157,7 @@
 			x: 24,
 			y: 2,
 			z: -5,
-			color: '#c5cbd3',
+			color: '#d5d8dd',
 			seed: 42,
 			ridgeOffset: 1,
 			ridgeWidth: 6

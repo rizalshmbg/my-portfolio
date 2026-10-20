@@ -35,21 +35,22 @@
 		});
 
 		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFShadowMap;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		const ambientLight = new THREE.AmbientLight('#cbd5e1', 1.5);
+		const ambientLight = new THREE.AmbientLight('#8791a3', 0.65);
 		scene.add(ambientLight);
 
-		const directionalLight = new THREE.DirectionalLight('#f5ead5', 1.2);
+		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 2);
 
 		directionalLight.position.set(10, 7, -20);
 		directionalLight.target.position.set(0, 0, 0);
+
 		directionalLight.castShadow = true;
 
-		directionalLight.shadow.mapSize.set(1024, 1024);
+		directionalLight.shadow.mapSize.set(2048, 2048);
 		directionalLight.shadow.camera.near = 0.5;
 		directionalLight.shadow.camera.far = 50;
 
@@ -58,10 +59,11 @@
 		directionalLight.shadow.camera.top = 30;
 		directionalLight.shadow.camera.bottom = -30;
 
-		directionalLight.shadow.bias = -0.0005;
-		directionalLight.shadow.normalBias = 0.03;
+		directionalLight.shadow.bias = -0.0001;
+		directionalLight.shadow.normalBias = 0.04;
 
 		scene.add(directionalLight);
+		scene.add(directionalLight.target);
 
 		let animationFrame = 0;
 

@@ -88,17 +88,20 @@
 			const isForeground = seed === 57;
 
 			const material = new THREE.MeshStandardMaterial({
-				color: isForeground ? '#080a0d' : color,
+				color: isForeground ? '#242b36' : color,
 				roughness: 1,
 				metalness: 0,
 				side: THREE.DoubleSide,
 				flatShading: false
 			});
 
+			material.shadowSide = THREE.DoubleSide;
+
 			const hill = new THREE.Mesh(geometry, material);
 
 			hill.position.set(x, y, z);
 			hill.receiveShadow = true;
+			hill.castShadow = true;
 
 			scene.add(hill);
 			hills.push(hill);
@@ -112,7 +115,7 @@
 			x: -18,
 			y: -0.5,
 			z: 2,
-			color: '#111619',
+			color: '#a4adba',
 			seed: 10,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -126,7 +129,7 @@
 			x: -6,
 			y: -4,
 			z: -9,
-			color: '#0b0d11',
+			color: '#737f91',
 			seed: 100,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -140,7 +143,7 @@
 			x: 7,
 			y: -2.5,
 			z: 5,
-			color: '#101216',
+			color: '#b6bfcc',
 			seed: 28,
 			ridgeOffset: 1.5,
 			ridgeWidth: 6
@@ -154,7 +157,7 @@
 			x: 24,
 			y: 2,
 			z: -5,
-			color: '#191d24',
+			color: '#c5cbd3',
 			seed: 42,
 			ridgeOffset: 1,
 			ridgeWidth: 6

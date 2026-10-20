@@ -86,10 +86,11 @@
 
 			const colors: number[] = [];
 
-			const snowShadow = new THREE.Color('#65758d');
-			const snowMid = new THREE.Color('#aab8ca');
-			const snowHighlight = new THREE.Color('#e2d9ca');
+			const snowShadow = new THREE.Color('#68778e');
+			const snowMid = new THREE.Color('#a7b5c8');
+			const snowHighlight = new THREE.Color('#dedbd5');
 
+			// Rentang tinggi permukaan bukit.
 			let minHeight = Infinity;
 			let maxHeight = -Infinity;
 
@@ -104,12 +105,15 @@
 			for (let i = 0; i < positions.count; i++) {
 				const h = (positions.getY(i) - minHeight) / heightRange;
 
+				// Gradasi dibuat lebih lembut agar tidak terlihat belang.
+				const t = THREE.MathUtils.smoothstep(h, 0.05, 0.95);
+
 				const snowColor = new THREE.Color();
 
-				if (h < 0.45) {
-					snowColor.copy(snowShadow).lerp(snowMid, h / 0.45);
+				if (t < 0.55) {
+					snowColor.copy(snowShadow).lerp(snowMid, t / 0.55);
 				} else {
-					snowColor.copy(snowMid).lerp(snowHighlight, (h - 0.45) / 0.55);
+					snowColor.copy(snowMid).lerp(snowHighlight, (t - 0.55) / 0.45);
 				}
 
 				colors.push(snowColor.r, snowColor.g, snowColor.b);

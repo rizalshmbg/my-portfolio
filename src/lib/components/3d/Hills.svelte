@@ -154,13 +154,12 @@
 			const gradientTexture = new THREE.CanvasTexture(gradientCanvas);
 			gradientTexture.colorSpace = THREE.SRGBColorSpace;
 
-			const material = new THREE.MeshBasicMaterial({
+			const material = new THREE.MeshStandardMaterial({
 				map: gradientTexture,
-				side: THREE.DoubleSide,
-				depthTest: true,
-				depthWrite: true,
-				transparent: false,
-				toneMapped: false
+				color: '#c2cad5',
+				roughness: 1,
+				metalness: 0,
+				side: THREE.DoubleSide
 			});
 
 			const hill = new THREE.Mesh(geometry, material);
@@ -172,11 +171,11 @@
 			hillTextures.push(gradientTexture);
 		}
 
-		createHill(40, 8, '#101115', new THREE.Vector3(-35, 0, -27), 'rolling', 'diagonal');
-		createHill(20, 5, '#101115', new THREE.Vector3(-23, -0.5, -29), 'peak', 'horizontal');
-		createHill(30, 7, '#101217', new THREE.Vector3(-10, 0, -32), 'ridge', 'vertical');
-		createHill(20, 5, '#101115', new THREE.Vector3(35, 0, -30), 'rolling', 'diagonal');
-		createHill(30, 7, '#101217', new THREE.Vector3(35, 0, -32), 'peak', 'vertical');
+		createHill(40, 8, '#596273', new THREE.Vector3(-35, 0, -27), 'rolling', 'diagonal');
+		createHill(20, 5, '#505b6d', new THREE.Vector3(-23, -0.5, -29), 'peak', 'horizontal');
+		createHill(30, 7, '#626d7e', new THREE.Vector3(-10, 0, -32), 'ridge', 'vertical');
+		createHill(20, 5, '#596273', new THREE.Vector3(35, 0, -30), 'rolling', 'diagonal');
+		createHill(30, 7, '#626d7e', new THREE.Vector3(35, 0, -32), 'peak', 'vertical');
 
 		return () => {
 			for (const hill of hills) {

@@ -69,12 +69,7 @@
 
 			materials.push(barkMaterial);
 
-			const trunkGeometry = new THREE.CylinderGeometry(
-				0, // Radius atas: runcing
-				height * 0.035, // Radius bawah: lebar
-				height,
-				7
-			);
+			const trunkGeometry = new THREE.CylinderGeometry(0, height * 0.035, height, 7);
 			geometries.push(trunkGeometry);
 
 			const trunk = new THREE.Mesh(trunkGeometry, barkMaterial);

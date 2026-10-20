@@ -1,19 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 	interface Props {
 		scene: THREE.Scene;
-	}
-
-	interface TreeConfig {
-		model: string;
-		x: number;
-		y: number;
-		z: number;
-		height: number;
-		rotationY?: number;
 	}
 
 	interface ProceduralTreeConfig {
@@ -28,53 +18,10 @@
 	let { scene }: Props = $props();
 
 	onMount(() => {
-		const loader = new GLTFLoader();
-
-		const modelGroups: THREE.Group[] = [];
 		const proceduralGroups: THREE.Group[] = [];
-
 		const geometries: THREE.BufferGeometry[] = [];
 		const materials: THREE.Material[] = [];
 
-		let disposed = false;
-
-		// Pohon utama: model GLB.
-		const modelConfigs: TreeConfig[] = [
-			{
-				model: '/models/dead-tree.glb',
-				x: -14,
-				y: -1.5,
-				z: -16,
-				height: 7,
-				rotationY: 0.2
-			},
-			{
-				model: '/models/bare-tree.glb',
-				x: 14,
-				y: -1.5,
-				z: -17,
-				height: 6,
-				rotationY: -0.3
-			},
-			{
-				model: '/models/bare-tree.glb',
-				x: -20,
-				y: -1.5,
-				z: -23,
-				height: 7,
-				rotationY: 0.45
-			},
-			{
-				model: '/models/dead-tree.glb',
-				x: 21,
-				y: -1.5,
-				z: -24,
-				height: 7.5,
-				rotationY: -0.4
-			}
-		];
-
-		// Pohon prosedural: variasi untuk mengisi sisi lanskap.
 		const proceduralConfigs: ProceduralTreeConfig[] = [
 			{ x: -28, y: -2.5, z: -25, height: 30, seed: 33 },
 			{ x: -10, y: -2, z: -13, height: 10, seed: 11 },
@@ -83,20 +30,6 @@
 			{ x: 12, y: -1.5, z: -10, height: 15.4, seed: 55 },
 			{ x: 17, y: -1.5, z: -12, height: 13.6, seed: 66 }
 		];
-
-		function trackResources(root: THREE.Object3D) {
-			root.traverse((object) => {
-				if (!(object instanceof THREE.Mesh)) return;
-
-				geometries.push(object.geometry);
-
-				const meshMaterials = Array.isArray(object.material) ? object.material : [object.material];
-
-				for (const material of meshMaterials) {
-					materials.push(material);
-				}
-			});
-		}
 
 		function addBranch(
 			group: THREE.Group,
@@ -121,7 +54,7 @@
 			branch.receiveShadow = true;
 
 			group.add(branch);
-			materials.push(material);
+			geometries.push(geometry);
 		}
 
 		function createProceduralTree(config: ProceduralTreeConfig) {
@@ -136,8 +69,13 @@
 
 			materials.push(barkMaterial);
 
-			// Batang utama sedikit meruncing.
-			const trunkGeometry = new THREE.CylinderGeometry(height * 0.012, height * 0.035, height, 6);
+			const trunkGeometry = new THREE.CylinderGeometry(
+				0, // Radius atas: runcing
+				height * 0.035, // Radius bawah: lebar
+				height,
+				7
+			);
+			geometries.push(trunkGeometry);
 
 			const trunk = new THREE.Mesh(trunkGeometry, barkMaterial);
 			trunk.position.y = height / 2;
@@ -146,7 +84,6 @@
 			trunk.receiveShadow = true;
 
 			group.add(trunk);
-			geometries.push(trunkGeometry);
 
 			// Variasi deterministik agar bentuk konsisten setiap refresh.
 			let randomSeed = config.seed;
@@ -203,85 +140,11 @@
 			proceduralGroups.push(group);
 		}
 
-		async function loadTree(config: TreeConfig) {
-			try {
-				const gltf = await loader.loadAsync(config.model);
-
-				if (disposed) {
-					// Model yang selesai dimuat setelah cleanup tidak dipasang.
-					gltf.scene.traverse((object) => {
-						if (!(object instanceof THREE.Mesh)) return;
-
-						object.geometry.dispose();
-
-						const meshMaterials = Array.isArray(object.material)
-							? object.material
-							: [object.material];
-
-						for (const material of meshMaterials) {
-							material.dispose();
-						}
-					});
-
-					return;
-				}
-
-				const tree = gltf.scene;
-
-				tree.updateMatrixWorld(true);
-
-				const originalBounds = new THREE.Box3().setFromObject(tree);
-				const originalSize = new THREE.Vector3();
-
-				originalBounds.getSize(originalSize);
-
-				if (originalSize.y <= 0) {
-					console.warn(`Tinggi model tidak valid: ${config.model}`);
-					return;
-				}
-
-				// Normalisasi tinggi model tanpa mengubah proporsinya.
-				const scale = config.height / originalSize.y;
-				tree.scale.multiplyScalar(scale);
-				tree.updateMatrixWorld(true);
-
-				const bounds = new THREE.Box3().setFromObject(tree);
-				const center = new THREE.Vector3();
-
-				bounds.getCenter(center);
-
-				// Pusatkan model pada X/Z dan letakkan alasnya pada Y = 0.
-				tree.position.set(-center.x, -bounds.min.y, -center.z);
-				tree.rotation.y = config.rotationY ?? 0;
-
-				const group = new THREE.Group();
-				group.position.set(config.x, config.y, config.z);
-				group.add(tree);
-
-				trackResources(tree);
-
-				scene.add(group);
-				modelGroups.push(group);
-			} catch (error) {
-				if (!disposed) {
-					console.error(`Gagal memuat pohon ${config.model}:`, error);
-				}
-			}
-		}
-
 		for (const config of proceduralConfigs) {
 			createProceduralTree(config);
 		}
 
-		void Promise.all(modelConfigs.map(loadTree));
-
 		return () => {
-			disposed = true;
-
-			for (const group of modelGroups) {
-				scene.remove(group);
-			}
-
 			for (const group of proceduralGroups) {
 				scene.remove(group);
 			}

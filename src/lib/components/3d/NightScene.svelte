@@ -7,6 +7,7 @@
 	import Hills from './Hills.svelte';
 	import ForegroundHills from './ForegroundHills.svelte';
 	import Trees from './Trees.svelte';
+	import MountainFog from './MountainFog.svelte'
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
@@ -106,6 +107,7 @@
 		<Stars {scene} />
 		<Clouds {scene} />
 		<Hills {scene} />
+		<MountainFog {scene} />
 		<ForegroundHills {scene} />
 		<Trees {scene} />
 	{/if}

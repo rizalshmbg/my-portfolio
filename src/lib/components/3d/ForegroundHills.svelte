@@ -93,7 +93,7 @@
 			hills.push(hill);
 		}
 
-		// 1. Bukit belakang kiri: rendah dan memanjang.
+		// 1. Bukit 1
 		createForegroundHill({
 			width: 38,
 			depth: 28,
@@ -107,7 +107,21 @@
 			ridgeWidth: 5
 		});
 
-		// 2. Bukit kanan: punggung landai yang naik ke kanan.
+		// 2. Bukit 2
+		createForegroundHill({
+			width: 18,
+			depth: 19,
+			height: 4.2,
+			x: -6,
+			y: -4,
+			z: -9,
+			color: '#0b0d11',
+			seed: 100,
+			ridgeOffset: -1.5,
+			ridgeWidth: 5
+		});
+
+		// 3. Bukit kanan: punggung landai yang naik ke kanan.
 		createForegroundHill({
 			width: 25,
 			depth: 22,
@@ -121,7 +135,7 @@
 			ridgeWidth: 6
 		});
 
-		// 3. Bukit belakang kanan: rendah dan memanjang.
+		// 4. Bukit belakang kanan: rendah dan memanjang.
 		createForegroundHill({
 			width: 30,
 			depth: 20,
@@ -133,20 +147,6 @@
 			seed: 42,
 			ridgeOffset: 1,
 			ridgeWidth: 6
-		});
-
-		// 4. Bukit foreground paling depan: membingkai bagian bawah scene.
-		createForegroundHill({
-			width: 58,
-			depth: 18,
-			height: 3,
-			x: 0,
-			y: -4.5,
-			z: 5,
-			color: '#0b0d11',
-			seed: 57,
-			ridgeOffset: -2,
-			ridgeWidth: 6.5
 		});
 
 		return () => {

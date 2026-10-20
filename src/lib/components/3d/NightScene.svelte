@@ -6,7 +6,7 @@
 	import Clouds from './Clouds.svelte';
 	import Hills from './Hills.svelte';
 	import ForegroundHills from './ForegroundHills.svelte';
-	// import Trees from './Trees.svelte';
+	import Trees from './Trees.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
@@ -104,7 +104,7 @@
 		<Clouds {scene} />
 		<Hills {scene} />
 		<ForegroundHills {scene} />
-		<!-- <Trees {scene} /> -->
+		<Trees {scene} />
 	{/if}
 </div>
 

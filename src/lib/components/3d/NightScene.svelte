@@ -7,10 +7,12 @@
 	import Hills from './Hills.svelte';
 	import ForegroundHills from './ForegroundHills.svelte';
 	import Trees from './Trees.svelte';
-	import MountainFog from './MountainFog.svelte'
+	import MountainFog from './MountainFog.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
+
+	let updateStars: ((time: number) => void) | undefined;
 
 	onMount(() => {
 		if (!canvas) return;
@@ -68,8 +70,13 @@
 
 		let animationFrame = 0;
 
+		const clock = new THREE.Clock();
+
 		function animate() {
 			animationFrame = requestAnimationFrame(animate);
+
+			updateStars?.(clock.getElapsedTime());
+
 			renderer.render(scene!, camera);
 		}
 
@@ -104,7 +111,7 @@
 
 	{#if scene}
 		<Moon {scene} />
-		<Stars {scene} />
+		<Stars {scene} registerUpdate={(callback) => (updateStars = callback)} />
 		<Clouds {scene} />
 		<Hills {scene} />
 		<MountainFog {scene} />

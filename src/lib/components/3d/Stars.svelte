@@ -4,9 +4,10 @@
 
 	interface Props {
 		scene: THREE.Scene;
+		registerUpdate?: (callback: (time: number) => void) => void;
 	}
 
-	let { scene }: Props = $props();
+	let { scene, registerUpdate }: Props = $props();
 
 	onMount(() => {
 		const objects: THREE.Object3D[] = [];
@@ -16,7 +17,7 @@
 		// --------------------------------------------------
 		// 1. Bintang kecil — distribusi mengikuti kode awal
 		// --------------------------------------------------
-		const starCount = 200;
+		const starCount = 400;
 		const positions = new Float32Array(starCount * 3);
 		const colors = new Float32Array(starCount * 3);
 
@@ -34,8 +35,8 @@
 		for (let i = 0; i < starCount; i++) {
 			const i3 = i * 3;
 
-			positions[i3] = (random() - 0.5) * 65;
-			positions[i3 + 1] = random() * 25 + 2;
+			positions[i3] = (random() - 0.5) * 90;
+			positions[i3 + 1] = random() * 30 + 2;
 			positions[i3 + 2] = -38 - random() * 4;
 
 			const color = random() > 0.65 ? warmWhite : coolWhite;
@@ -126,8 +127,61 @@
 		createSparkle(-28, 5, -29, 0.28);
 		createSparkle(23, 7, -31, 0.3);
 
+		createSparkle(-14, 7, -31, 0.3);
+		createSparkle(-11, 13, -35, 0.25);
+		createSparkle(-2, 10, -33, 0.28);
+		createSparkle(9, 15, -36, 0.32);
+		createSparkle(19, 5, -30, 0.25);
+		createSparkle(27, 13, -34, 0.3);
+		createSparkle(-25, 16, -35, 0.32);
+		createSparkle(2, 5, -29, 0.22);
+		createSparkle(12, 10, -32, 0.24);
+		createSparkle(-17, 4, -30, 0.2);
+
+		// Sisi kiri langit
+		createSparkle(-34, 17, -34, 0.3);
+		createSparkle(-38, 12, -32, 0.24);
+		createSparkle(-32, 8, -35, 0.28);
+		createSparkle(-36, 4, -31, 0.22);
+
+		// Sisi kanan langit
+		createSparkle(32, 16, -34, 0.3);
+		createSparkle(38, 12, -32, 0.24);
+		createSparkle(34, 8, -35, 0.28);
+		createSparkle(37, 4, -31, 0.22);
+
 		// --------------------------------------------------
-		// 3. Cleanup
+		// 3. Animasi twinkle
+		// --------------------------------------------------
+		const sparkleObjects = objects.filter(
+			(object): object is THREE.Group => object instanceof THREE.Group
+		);
+
+		const sparkleMaterials = sparkleObjects.map((sparkle) => {
+			const mesh = sparkle.children[0] as THREE.Mesh;
+			return mesh.material as THREE.MeshBasicMaterial;
+		});
+
+		const sparklePhases = sparkleObjects.map((_, index) => index * 1.7);
+
+		// Bintang kecil: perubahan kecerahan lebih terlihat.
+		const updateAnimation = (time: number) => {
+			const smallStarPulse = 0.35 + 0.65 * ((Math.sin(time * 2.4) + 1) / 2);
+			starMaterial.opacity = smallStarPulse;
+
+			// Bintang aksen: berdenyut dengan fase dan kecepatan berbeda.
+			sparkleMaterials.forEach((material, index) => {
+				const pulse =
+					0.25 + 0.75 * ((Math.sin(time * (2.2 + index * 0.12) + sparklePhases[index]) + 1) / 2);
+
+				material.opacity = pulse;
+			});
+		};
+
+		registerUpdate?.(updateAnimation);
+
+		// --------------------------------------------------
+		// 4. Cleanup
 		// --------------------------------------------------
 		return () => {
 			for (const object of objects) {
@@ -141,6 +195,8 @@
 			for (const material of materials) {
 				material.dispose();
 			}
+
+			registerUpdate?.(() => {});
 		};
 	});
 </script>

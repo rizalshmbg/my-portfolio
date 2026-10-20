@@ -255,7 +255,7 @@
 		createCloud({
 			width: 10,
 			height: 8,
-			position: new THREE.Vector3(35, 7, -42),
+			position: new THREE.Vector3(35, 9, -42),
 			color: '#292f3a',
 			opacity:0.58,
 			seed: 62,

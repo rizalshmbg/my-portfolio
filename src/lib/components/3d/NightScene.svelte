@@ -33,6 +33,13 @@
 		camera.position.set(0, 2, 8);
 		camera.lookAt(0, 4, -10);
 
+		const cameraBasePosition = camera.position.clone();
+		const cameraBaseTarget = new THREE.Vector3(0, 4, -10);
+
+		const mouse = new THREE.Vector2(0, 0);
+		const cameraTargetPosition = new THREE.Vector3();
+		const lookTarget = new THREE.Vector3();
+
 		const renderer = new THREE.WebGLRenderer({
 			canvas: currentCanvas,
 			antialias: true
@@ -73,6 +80,17 @@
 
 		const clock = new THREE.Clock();
 
+		function handleMouseMove(event: MouseEvent) {
+			const rect = currentCanvas.getBoundingClientRect();
+
+			if (!rect.width || !rect.height) return;
+
+			mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			mouse.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+		}
+
+		currentCanvas.addEventListener('mousemove', handleMouseMove);
+
 		function animate() {
 			animationFrame = requestAnimationFrame(animate);
 
@@ -80,6 +98,23 @@
 
 			updateStars?.(time);
 			updateClouds?.(time);
+
+			// Batas gerakan kamera agar komposisi tetap terjaga.
+			cameraTargetPosition.set(
+				cameraBasePosition.x + mouse.x * 1.1,
+				cameraBasePosition.y + mouse.y * 0.65,
+				cameraBasePosition.z
+			);
+
+			lookTarget.set(
+				cameraBaseTarget.x + mouse.x * 0.6,
+				cameraBaseTarget.y + mouse.y * 0.4,
+				cameraBaseTarget.z
+			);
+
+			// Kamera mengikuti mouse dengan lebih responsif.
+			camera.position.lerp(cameraTargetPosition, 0.07);
+			camera.lookAt(lookTarget);
 
 			renderer.render(scene!, camera);
 		}
@@ -103,8 +138,9 @@
 		return () => {
 			cancelAnimationFrame(animationFrame);
 			window.removeEventListener('resize', resize);
-			renderer.dispose();
+			currentCanvas.removeEventListener('mousemove', handleMouseMove);
 
+			renderer.dispose();
 			scene = null;
 		};
 	});

@@ -45,18 +45,29 @@
 				let terrainHeight: number;
 
 				if (seed === 42) {
-					// Bukit ketiga: lereng lebar seperti garis putih pada referensi.
-					const slope = px * 0.16;
+					// Lereng diagonal: rendah di kiri, tinggi di kanan.
+					const slope = px * 0.24;
 
-					// Membuat permukaan naik secara halus menuju kanan.
-					const broadCurve = Math.exp(-Math.pow((nx + 0.25) * 1.2, 2)) * 1.1;
+					// Punggung bukit yang lebih tinggi di bagian kanan.
+					const ridge = Math.exp(-Math.pow((nx - 0.55) * 1.3, 2)) * 1.4;
 
-					// Variasi kecil agar lereng tidak terlihat benar-benar datar.
-					const gentleCurve = Math.sin(px * 0.06 + seed) * 0.15 + Math.sin(pz * 0.1 + seed) * 0.08;
+					// Variasi kecil agar permukaan tidak terlalu geometris.
+					const gentleCurve = Math.sin(px * 0.045 + seed) * 0.1 + Math.sin(pz * 0.08 + seed) * 0.06;
 
-					terrainHeight = (slope + broadCurve + gentleCurve) * (height / 4.2);
+					terrainHeight = (slope + ridge + gentleCurve) * (height / 4.2);
+				} else if (seed === 28) {
+					// Bukit 3: lereng foreground kanan, naik menuju tepi kanan.
+					const slope = px * 0.28;
+
+					// Membuat punggung bukit sedikit membulat.
+					const ridge = Math.exp(-Math.pow((nx - 0.45) * 1.5, 2)) * 0.65;
+
+					// Variasi halus agar permukaan tidak terlalu lurus.
+					const gentleCurve = Math.sin(px * 0.06 + seed) * 0.08 + Math.sin(pz * 0.09 + seed) * 0.05;
+
+					terrainHeight = (slope + ridge + gentleCurve) * (height / 4.2);
 				} else {
-					const diagonalSlope = seed === 28 ? px * 0.08 : px * -0.22;
+					const diagonalSlope = px * -0.22;
 
 					const gentleCurve =
 						Math.sin(px * 0.075 + seed) * 0.35 + Math.sin(px * 0.035 + seed * 0.7) * 0.25;
@@ -121,28 +132,28 @@
 			ridgeWidth: 5
 		});
 
-		// 3. Bukit kanan: punggung landai yang naik ke kanan.
+		// 3. Bukit 3
 		createForegroundHill({
 			width: 25,
 			depth: 22,
-			height: 4,
-			x: 19,
+			height: 3.2,
+			x: 7,
 			y: -2.5,
-			z: 2,
+			z: 5,
 			color: '#101216',
 			seed: 28,
 			ridgeOffset: 1.5,
 			ridgeWidth: 6
 		});
 
-		// 4. Bukit belakang kanan: rendah dan memanjang.
+		// 4. Bukit 4
 		createForegroundHill({
 			width: 30,
 			depth: 20,
-			height: 3.5,
-			x: 25,
-			y: 1,
-			z: -4,
+			height: 4.5,
+			x: 24,
+			y: 2,
+			z: -5,
 			color: '#191d24',
 			seed: 42,
 			ridgeOffset: 1,

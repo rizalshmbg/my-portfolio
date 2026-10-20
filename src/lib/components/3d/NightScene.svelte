@@ -13,6 +13,7 @@
 	let scene = $state<THREE.Scene | null>(null);
 
 	let updateStars: ((time: number) => void) | undefined;
+	let updateClouds: ((time: number) => void) | undefined;
 
 	onMount(() => {
 		if (!canvas) return;
@@ -75,7 +76,10 @@
 		function animate() {
 			animationFrame = requestAnimationFrame(animate);
 
-			updateStars?.(clock.getElapsedTime());
+			const time = clock.getElapsedTime();
+
+			updateStars?.(time);
+			updateClouds?.(time);
 
 			renderer.render(scene!, camera);
 		}
@@ -112,7 +116,7 @@
 	{#if scene}
 		<Moon {scene} />
 		<Stars {scene} registerUpdate={(callback) => (updateStars = callback)} />
-		<Clouds {scene} />
+		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />
 		<MountainFog {scene} />
 		<ForegroundHills {scene} />

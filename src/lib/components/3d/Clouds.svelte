@@ -4,7 +4,10 @@
 
 	interface Props {
 		scene: THREE.Scene;
+		registerUpdate?: (callback: (time: number) => void) => void;
 	}
+
+	let { scene, registerUpdate }: Props = $props();
 
 	interface CloudLayer {
 		width: number;
@@ -13,14 +16,20 @@
 		color: string;
 		opacity: number;
 		seed: number;
+		speed: number;
+		direction: number;
 	}
-
-	let { scene }: Props = $props();
 
 	onMount(() => {
 		const cloudMeshes: THREE.Mesh[] = [];
 		const cloudTextures: THREE.CanvasTexture[] = [];
 		const cloudMaterials: THREE.MeshBasicMaterial[] = [];
+		const animatedClouds: {
+			mesh: THREE.Mesh;
+			startX: number;
+			speed: number;
+			direction: number;
+		}[] = [];
 
 		function drawCloudSilhouette(
 			context: CanvasRenderingContext2D,
@@ -188,6 +197,12 @@
 			mesh.position.copy(layer.position);
 
 			scene.add(mesh);
+			animatedClouds.push({
+				mesh,
+				startX: layer.position.x,
+				speed: layer.speed,
+				direction: layer.direction
+			});
 
 			cloudMeshes.push(mesh);
 			cloudTextures.push(texture);
@@ -197,77 +212,84 @@
 		createCloud({
 			width: 12,
 			height: 7,
-			position: new THREE.Vector3(-47, 6.5, -42),
-			color: '#292d33',
-			opacity: 0.58,
-			seed: 20
+			position: new THREE.Vector3(-45, 6.5, -42),
+			color: '#252b35',
+			opacity: 1,
+			seed: 20,
+			speed: 0.30,
+			direction: 1
+		});
+		createCloud({
+			width: 13,
+			height: 8,
+			position: new THREE.Vector3(-30, 6.5, -42),
+			color: '#303744',
+			opacity: 0.82,
+			seed: 20,
+			speed: 0.08,
+			direction: -1
 		});
 		createCloud({
 			width: 20,
-			height: 15,
-			position: new THREE.Vector3(-30, 6.5, -42),
+			height: 9,
+			position: new THREE.Vector3(-12, 6.5, -42),
 			color: '#292d33',
-			opacity: 0.82,
-			seed: 20
+			opacity: 1,
+			seed: 120,
+			speed: 0.06,
+			direction: 1
 		});
-		createCloud({
-			width: 25,
-			height: 17,
-			position: new THREE.Vector3(-20, 6.5, -42),
-			color: '#292d33',
-			opacity: 0.77,
-			seed: 120
-		});
-		createCloud({
-			width: 25,
-			height: 20,
-			position: new THREE.Vector3(-25, 5, -42),
-			color: '#292d33',
-			opacity: 0.67,
-			seed: 98,
-		});
+
 		createCloud({
 			width: 10,
 			height: 8,
 			position: new THREE.Vector3(2, 3, -42),
-			color: '#292d33',
+			color: '#41414a',
 			opacity: 1,
-			seed: 86
-		});
-		createCloud({
-			width: 15,
-			height: 15,
-			position: new THREE.Vector3(-8, 5, -42),
-			color: '#292d33',
-			opacity: 1,
-			seed: 100
+			seed: 86,
+			speed: 0.14,
+			direction: -1
 		});
 
 		// Kanan
-    createCloud({
+		createCloud({
 			width: 10,
 			height: 8,
 			position: new THREE.Vector3(35, 7, -42),
-			color: '#292d33',
-			opacity: 0.36,
-			seed: 62
+			color: '#292f3a',
+			opacity:0.58,
+			seed: 62,
+			speed: 0.19,
+			direction: -1
 		});
-    createCloud({
-			width: 15,
+		createCloud({
+			width: 10,
 			height: 8,
-			position: new THREE.Vector3(40, 8, -42),
-			color: '#292d33',
-			opacity: 0.52,
-			seed: 62
+			position: new THREE.Vector3(45, 8, -42),
+			color: '#343945',
+			opacity: 0.82,
+			seed: 62,
+			speed: 0.17,
+			direction: 1
 		});
-    createCloud({
+		createCloud({
 			width: 10,
 			height: 8,
 			position: new THREE.Vector3(30, 5, -42),
-			color: '#292d33',
-			opacity: 0.66,
-			seed: 62
+			color: '#292d35',
+			opacity: 1,
+			seed: 62,
+			speed: 0.25,
+			direction: -1
 		});
+
+		const updateClouds = (time: number) => {
+			for (const cloud of animatedClouds) {
+				cloud.mesh.position.x = cloud.startX + Math.sin(time * cloud.speed) * 0.8 * cloud.direction;
+			}
+		};
+
+		registerUpdate?.(updateClouds);
 
 		return () => {
 			for (const mesh of cloudMeshes) {
@@ -282,6 +304,8 @@
 			for (const texture of cloudTextures) {
 				texture.dispose();
 			}
+
+			registerUpdate?.(() => {});
 		};
 	});
 </script>

@@ -18,14 +18,13 @@
 			x: number;
 			y: number;
 			z: number;
-			color: string;
 			seed: number;
 			ridgeOffset: number;
 			ridgeWidth: number;
 		}
 
 		function createForegroundHill(config: ForegroundHillConfig) {
-			const { width, depth, height, x, y, z, color, seed } = config;
+			const { width, depth, height, x, y, z, seed } = config;
 
 			const segmentsX = 100;
 			const segmentsZ = 48;
@@ -85,14 +84,45 @@
 
 			geometry.computeVertexNormals();
 
-			const isForeground = seed === 57;
+			const colors: number[] = [];
+
+			const snowShadow = new THREE.Color('#65758d');
+			const snowMid = new THREE.Color('#aab8ca');
+			const snowHighlight = new THREE.Color('#e2d9ca');
+
+			let minHeight = Infinity;
+			let maxHeight = -Infinity;
+
+			for (let i = 0; i < positions.count; i++) {
+				const h = positions.getY(i);
+				minHeight = Math.min(minHeight, h);
+				maxHeight = Math.max(maxHeight, h);
+			}
+
+			const heightRange = Math.max(maxHeight - minHeight, 0.001);
+
+			for (let i = 0; i < positions.count; i++) {
+				const h = (positions.getY(i) - minHeight) / heightRange;
+
+				const snowColor = new THREE.Color();
+
+				if (h < 0.45) {
+					snowColor.copy(snowShadow).lerp(snowMid, h / 0.45);
+				} else {
+					snowColor.copy(snowMid).lerp(snowHighlight, (h - 0.45) / 0.55);
+				}
+
+				colors.push(snowColor.r, snowColor.g, snowColor.b);
+			}
+
+			geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
 			const material = new THREE.MeshStandardMaterial({
-				color: isForeground ? '#242b36' : color,
+				color: '#ffffff',
+				vertexColors: true,
 				roughness: 1,
 				metalness: 0,
-				side: THREE.DoubleSide,
-				flatShading: false
+				side: THREE.DoubleSide
 			});
 
 			material.shadowSide = THREE.DoubleSide;
@@ -115,7 +145,6 @@
 			x: -18,
 			y: -0.5,
 			z: 2,
-			color: '#aeb9c8',
 			seed: 10,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -129,7 +158,6 @@
 			x: -6,
 			y: -4,
 			z: -9,
-			color: '#7d8b9f',
 			seed: 100,
 			ridgeOffset: -1.5,
 			ridgeWidth: 5
@@ -143,7 +171,6 @@
 			x: 7,
 			y: -2.5,
 			z: 5,
-			color: '#c4ccd6',
 			seed: 28,
 			ridgeOffset: 1.5,
 			ridgeWidth: 6
@@ -157,7 +184,6 @@
 			x: 24,
 			y: 2,
 			z: -5,
-			color: '#d5d8dd',
 			seed: 42,
 			ridgeOffset: 1,
 			ridgeWidth: 6

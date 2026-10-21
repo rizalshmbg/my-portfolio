@@ -30,34 +30,56 @@
 		const nz = z / (TERRAIN.depth / 2);
 
 		const ridgeCenter = -0.28 + 0.2 * nx * nx + 0.035 * Math.sin(nx * 3);
-
 		const distance = nz - ridgeCenter;
 
 		const ridge = 0.9 * Math.exp(-Math.pow(distance / 0.58, 2));
-
 		const shoulder = 0.38 * Math.exp(-Math.pow(distance / 1.0, 2));
-
 		const frontSlope = -0.4 * THREE.MathUtils.smoothstep(distance, 0.05, 1.0);
 
-		// Cekungan mengikuti jalur sungai yang sama.
+		// Cekungan sungai tetap mengikuti jalur yang sudah ada.
 		const riverDistance = nx - riverCenterNX(nz);
 
 		const riverMask = Math.exp(-Math.pow(riverDistance / 0.25, 4));
-
 		const riverBed = -0.72 * riverMask;
-
 		const riverBanks = 0.3 * Math.exp(-Math.pow((Math.abs(riverDistance) - 0.3) / 0.12, 2));
 
-		// Gundukan salju di sisi kiri dan kanan foreground.
+		// Gundukan salju pada sisi kiri dan kanan foreground.
 		const sideMask = THREE.MathUtils.smoothstep(Math.abs(nx), 0.3, 0.95);
-
 		const frontMask = THREE.MathUtils.smoothstep(nz, -0.05, 0.85);
-
 		const sideRise = 0.28 * sideMask * frontMask;
 
+		// Gelombang dasar yang sudah ada.
 		const rolling = 0.025 * Math.sin(nx * 2.4 + nz * 0.8) + 0.018 * Math.sin(nx * 4.0 - nz * 1.1);
 
-		return -0.55 + ridge + shoulder + frontSlope + sideRise + riverBanks + riverBed + rolling;
+		// Gundukan salju lebar dengan pola yang tidak terlalu teratur.
+		const broadSnow =
+			0.052 * Math.sin(x * 0.15 + z * 0.08) * Math.sin(z * 0.12 - x * 0.045) +
+			0.022 * Math.sin(x * 0.095 - z * 0.13 + 1.4);
+
+		// Detail kecil untuk memecah permukaan yang terlalu rata.
+		const fineSnow = 0.007 * Math.sin(x * 0.34 + z * 0.19) * Math.sin(z * 0.25 - x * 0.14);
+
+		// Efek kontur lebih terasa di foreground.
+		const foregroundMask = THREE.MathUtils.smoothstep(nz, -0.05, 0.8);
+
+		// Kurangi perubahan bentuk tepat di dekat tepi sungai.
+		const riverDistanceWorld = Math.abs(riverDistance) * (TERRAIN.width / 2);
+
+		const riverFade = THREE.MathUtils.smoothstep(riverDistanceWorld, 2.8, 7.0);
+
+		const snowContours = (broadSnow + fineSnow) * riverFade * (0.35 + 0.65 * foregroundMask);
+
+		return (
+			-0.55 +
+			ridge +
+			shoulder +
+			frontSlope +
+			sideRise +
+			riverBanks +
+			riverBed +
+			rolling +
+			snowContours
+		);
 	}
 
 	onMount(() => {
@@ -105,14 +127,24 @@
 					const color = new THREE.Color();
 
 					if (normalizedHeight < 0.48) {
-						color
-							.copy(new THREE.Color('#414a5b'))
-							.lerp(new THREE.Color('#929bad'), normalizedHeight / 0.48);
+						color.set('#414a5b').lerp(new THREE.Color('#929bad'), normalizedHeight / 0.48);
 					} else {
-						color
-							.copy(new THREE.Color('#929bad'))
-							.lerp(new THREE.Color('#d8d5cf'), (normalizedHeight - 0.48) / 0.52);
+						color.set('#929bad').lerp(new THREE.Color('#d8d5cf'), (normalizedHeight - 0.48) / 0.52);
 					}
+
+					// Variasi warna halus untuk menghindari permukaan salju yang monoton.
+					const nx = localX / (TERRAIN.width / 2);
+
+					// Gunakan nz yang sudah tersedia dari loop iz.
+					const broadVariation = Math.sin(nx * 5.5 + nz * 2.2) * Math.sin(nz * 3.8 - nx * 2.7);
+
+					const fineVariation = Math.sin(nx * 13.0 + nz * 7.0) * Math.sin(nz * 10.0 - nx * 6.0);
+
+					const variation = broadVariation * 0.018 + fineVariation * 0.004;
+
+					const snowTint = new THREE.Color(variation >= 0 ? '#e3e8f0' : '#8995a8');
+
+					color.lerp(snowTint, Math.abs(variation));
 
 					colors.push(color.r, color.g, color.b);
 

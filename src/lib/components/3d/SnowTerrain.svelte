@@ -4,7 +4,7 @@
 
 	interface Props {
 		scene: THREE.Scene;
-		registerUpdate?: (callback: (time: number) => void) => void;
+		registerUpdate?: (callback: ((time: number) => void) | undefined) => void;
 	}
 
 	let { scene, registerUpdate }: Props = $props();
@@ -391,19 +391,22 @@
 
 				if (!(material instanceof THREE.MeshBasicMaterial)) continue;
 
-				const wave = 0.55 + 0.45 * Math.sin(time * 0.001 * shimmer.speed + shimmer.phase);
+				const wave = 0.55 + 0.45 * Math.sin(time * shimmer.speed + shimmer.phase);
 
 				material.opacity = shimmer.baseOpacity * wave;
 			}
 		};
 
-    registerUpdate?.(updateRiverReflection);
+		registerUpdate?.(updateRiverReflection);
 
 		// ================================================
 		// CLEANUP
 		// ================================================
 
 		return () => {
+			// Hapus callback animasi dari NightScene
+			registerUpdate?.(undefined);
+
 			scene.remove(river);
 			scene.remove(leftSnow);
 			scene.remove(rightSnow);

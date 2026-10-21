@@ -234,7 +234,7 @@
 		const reflectionGroup = new THREE.Group();
 		reflectionGroup.name = 'RiverMoonReflection';
 
-		const reflectionCount = 150;
+		const reflectionCount = 200;
 
 		// Simpan data untuk animasi kilauan.
 		const shimmerMeshes: {
@@ -248,7 +248,7 @@
 			// Posisi tersebar di sepanjang sungai.
 			// Gunakan distribusi nonlinier agar pantulan lebih
 			// terkonsentrasi di bagian tengah hingga foreground.
-			const t = 0.3 + Math.pow(Math.random(), 0.85) * 0.67;
+			const t = 0.22 + Math.pow(Math.random(), 0.72) * 0.75;
 
 			const localZ = THREE.MathUtils.lerp(-TERRAIN.depth / 2 + 0.5, TERRAIN.depth / 2 - 0.5, t);
 
@@ -263,15 +263,20 @@
 			const riverWidth = halfWidth * widthVariation * endFade;
 
 			// Sebarkan kilauan di dalam area tengah sungai.
-			const offsetX = THREE.MathUtils.randFloat(-riverWidth * 0.7, riverWidth * 0.7);
+			const spread = Math.random() < 0.75 ? 0.32 : 0.75;
+
+			const offsetX = THREE.MathUtils.randFloat(-riverWidth * spread, riverWidth * spread);
 
 			const localX = centerLocalX + offsetX;
 
 			const waterY = TERRAIN.centerY + terrainHeight(localX, localZ) + 0.085;
 
 			// Kilauan pendek dengan ukuran bervariasi.
-			const lineWidth = THREE.MathUtils.randFloat(0.035, 0.17);
-			const lineLength = THREE.MathUtils.randFloat(0.018, 0.055);
+			const lineWidth = THREE.MathUtils.randFloat(0.1, 0.32);
+			const lineLength =
+				Math.random() < 0.18
+					? THREE.MathUtils.randFloat(0.07, 0.12)
+					: THREE.MathUtils.randFloat(0.025, 0.065);
 
 			const reflectionGeometry = new THREE.PlaneGeometry(lineWidth, lineLength);
 
@@ -280,15 +285,16 @@
 			const isBright = Math.random() > 0.78;
 
 			const baseOpacity = isBright
-				? THREE.MathUtils.randFloat(0.3, 0.55)
-				: THREE.MathUtils.randFloat(0.08, 0.24);
+				? THREE.MathUtils.randFloat(0.65, 0.9)
+				: THREE.MathUtils.randFloat(0.3, 0.55);
 
 			const reflectionMaterial = new THREE.MeshBasicMaterial({
-				color: isBright ? '#ffe8b5' : '#b7c5c8',
+				color: isBright ? '#ffe8b5' : '#d4dce0',
 				transparent: true,
 				opacity: baseOpacity,
 				side: THREE.DoubleSide,
-				depthWrite: false
+				depthWrite: false,
+				toneMapped: false
 			});
 
 			const reflection = new THREE.Mesh(reflectionGeometry, reflectionMaterial);
@@ -315,47 +321,54 @@
 		const ribbonVertices: number[] = [];
 		const ribbonIndices: number[] = [];
 
-		const ribbonSegments = 100;
+		const segmentCount = 34;
 
-		for (let i = 0; i <= ribbonSegments; i++) {
-			const t = i / ribbonSegments;
-			const riverT = 0.32 + t * 0.66;
+		for (let i = 0; i < segmentCount; i++) {
+			// Sisakan celah di antara setiap pantulan.
+			const startT = 0.32 + (i / segmentCount) * 0.66;
 
-			const localZ = THREE.MathUtils.lerp(
-				-TERRAIN.depth / 2 + 0.5,
-				TERRAIN.depth / 2 - 0.5,
-				riverT
+			const endT = Math.min(
+				startT + (0.66 / segmentCount) * THREE.MathUtils.randFloat(0.35, 0.8),
+				0.98
 			);
 
-			const nz = localZ / (TERRAIN.depth / 2);
-			const centerNX = riverCenterNX(nz);
-			const centerLocalX = centerNX * (TERRAIN.width / 2);
+			for (let j = 0; j <= 2; j++) {
+				const t = THREE.MathUtils.lerp(startT, endT, j / 2);
 
-			const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+				const localZ = THREE.MathUtils.lerp(-TERRAIN.depth / 2 + 0.5, TERRAIN.depth / 2 - 0.5, t);
 
-			const endFade = THREE.MathUtils.smoothstep(Math.min(riverT, 1 - riverT), 0, 0.12);
+				const nz = localZ / (TERRAIN.depth / 2);
+				const centerNX = riverCenterNX(nz);
+				const centerLocalX = centerNX * (TERRAIN.width / 2);
 
-			const ribbonWidth = 0.08 * widthVariation * (0.4 + 0.6 * Math.sin(Math.PI * t)) * endFade;
+				const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
 
-			const waterY = TERRAIN.centerY + terrainHeight(centerLocalX, localZ) + 0.095;
+				const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
 
-			ribbonVertices.push(
-				TERRAIN.centerX + centerLocalX - ribbonWidth,
-				waterY,
-				TERRAIN.centerZ + localZ,
+				// Pantulan lebih lebar di bagian tengah segmen.
+				const localSegmentT = j / 2;
+				const shape = Math.sin(Math.PI * localSegmentT);
 
-				TERRAIN.centerX + centerLocalX + ribbonWidth,
-				waterY,
-				TERRAIN.centerZ + localZ
-			);
+				const ribbonWidth =
+					THREE.MathUtils.randFloat(0.09, 0.17) * widthVariation * (0.45 + 0.55 * shape) * endFade;
 
-			if (i < ribbonSegments) {
-				const a = i * 2;
-				const b = a + 1;
-				const c = a + 2;
-				const d = a + 3;
+				const waterY = TERRAIN.centerY + terrainHeight(centerLocalX, localZ) + 0.14;
 
-				ribbonIndices.push(a, c, b, b, c, d);
+				ribbonVertices.push(
+					TERRAIN.centerX + centerLocalX - ribbonWidth,
+					waterY,
+					TERRAIN.centerZ + localZ,
+
+					TERRAIN.centerX + centerLocalX + ribbonWidth,
+					waterY,
+					TERRAIN.centerZ + localZ
+				);
+
+				if (j < 2) {
+					const base = i * 6 + j * 2;
+
+					ribbonIndices.push(base, base + 2, base + 1, base + 1, base + 2, base + 3);
+				}
 			}
 		}
 
@@ -370,9 +383,10 @@
 		const reflectionRibbonMaterial = new THREE.MeshBasicMaterial({
 			color: '#f4d99c',
 			transparent: true,
-			opacity: 0.012,
+			opacity: 0.035,
 			side: THREE.DoubleSide,
-			depthWrite: false
+			depthWrite: false,
+			toneMapped: false
 		});
 
 		const reflectionRibbon = new THREE.Mesh(reflectionRibbonGeometry, reflectionRibbonMaterial);
@@ -389,11 +403,18 @@
 			for (const shimmer of shimmerMeshes) {
 				const material = shimmer.mesh.material;
 
-				if (!(material instanceof THREE.MeshBasicMaterial)) continue;
+				if (!(material instanceof THREE.MeshBasicMaterial)) {
+					continue;
+				}
 
-				const wave = 0.55 + 0.45 * Math.sin(time * shimmer.speed + shimmer.phase);
+				// Setiap kilauan memiliki ritme berbeda.
+				const wave = 0.72 + 0.28 * Math.sin(time * shimmer.speed + shimmer.phase);
 
-				material.opacity = shimmer.baseOpacity * wave;
+				// Gelombang kedua memberi variasi yang lebih lembut.
+				const secondaryWave =
+					0.92 + 0.08 * Math.sin(time * shimmer.speed * 0.55 + shimmer.phase * 1.7);
+
+				material.opacity = shimmer.baseOpacity * wave * secondaryWave;
 			}
 		};
 

@@ -242,13 +242,14 @@
 			baseOpacity: number;
 			phase: number;
 			speed: number;
+			distanceFactor: number;
 		}[] = [];
 
 		for (let i = 0; i < reflectionCount; i++) {
 			// Posisi tersebar di sepanjang sungai.
 			// Gunakan distribusi nonlinier agar pantulan lebih
 			// terkonsentrasi di bagian tengah hingga foreground.
-			const t = 0.22 + Math.pow(Math.random(), 0.72) * 0.75;
+			const t = 0.22 + Math.pow(Math.random(), 0.9) * 0.75;
 
 			const localZ = THREE.MathUtils.lerp(-TERRAIN.depth / 2 + 0.5, TERRAIN.depth / 2 - 0.5, t);
 
@@ -269,24 +270,31 @@
 
 			const localX = centerLocalX + offsetX;
 
+			const middleFactor = THREE.MathUtils.smoothstep(t, 0.35, 0.65);
+			const foregroundFactor = THREE.MathUtils.smoothstep(t, 0.58, 0.92);
 			const waterY = TERRAIN.centerY + terrainHeight(localX, localZ) + 0.085;
 
 			// Kilauan pendek dengan ukuran bervariasi.
-			const lineWidth = THREE.MathUtils.randFloat(0.1, 0.32);
+			const lineWidth =
+				THREE.MathUtils.randFloat(0.08, 0.2) * (1 + 0.2 * middleFactor + 0.35 * foregroundFactor);
+
 			const lineLength =
-				Math.random() < 0.18
-					? THREE.MathUtils.randFloat(0.07, 0.12)
-					: THREE.MathUtils.randFloat(0.025, 0.065);
+				(Math.random() < 0.18
+					? THREE.MathUtils.randFloat(0.05, 0.09)
+					: THREE.MathUtils.randFloat(0.02, 0.05)) *
+				(1 + 0.15 * middleFactor + 0.3 * foregroundFactor);
 
 			const reflectionGeometry = new THREE.PlaneGeometry(lineWidth, lineLength);
 
 			reflectionGeometry.rotateX(-Math.PI / 2);
 
-			const isBright = Math.random() > 0.78;
+			const brightChance = 0.2 + 0.08 * middleFactor + 0.08 * foregroundFactor;
+
+			const isBright = Math.random() < brightChance;
 
 			const baseOpacity = isBright
-				? THREE.MathUtils.randFloat(0.65, 0.9)
-				: THREE.MathUtils.randFloat(0.3, 0.55);
+				? THREE.MathUtils.randFloat(0.55, 0.78)
+				: THREE.MathUtils.randFloat(0.22, 0.42);
 
 			const reflectionMaterial = new THREE.MeshBasicMaterial({
 				color: isBright ? '#ffe8b5' : '#d4dce0',
@@ -310,7 +318,8 @@
 				mesh: reflection,
 				baseOpacity,
 				phase: Math.random() * Math.PI * 2,
-				speed: THREE.MathUtils.randFloat(0.6, 1.8)
+				speed: THREE.MathUtils.randFloat(0.6, 1.8),
+				distanceFactor: Math.max(middleFactor, foregroundFactor)
 			});
 		}
 
@@ -407,12 +416,18 @@
 					continue;
 				}
 
-				// Setiap kilauan memiliki ritme berbeda.
-				const wave = 0.72 + 0.28 * Math.sin(time * shimmer.speed + shimmer.phase);
+				const foreground = shimmer.distanceFactor;
 
-				// Gelombang kedua memberi variasi yang lebih lembut.
+				// Perubahan terang-redup lebih kuat di foreground.
+				const waveStrength = 0.35 + 0.4 * foreground;
+
+				const wave =
+					1 -
+					waveStrength +
+					waveStrength * (0.5 + 0.5 * Math.sin(time * shimmer.speed + shimmer.phase));
+
 				const secondaryWave =
-					0.92 + 0.08 * Math.sin(time * shimmer.speed * 0.55 + shimmer.phase * 1.7);
+					0.9 + 0.1 * Math.sin(time * shimmer.speed * 0.65 + shimmer.phase * 1.8);
 
 				material.opacity = shimmer.baseOpacity * wave * secondaryWave;
 			}

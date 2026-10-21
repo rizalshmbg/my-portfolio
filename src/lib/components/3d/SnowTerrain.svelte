@@ -266,7 +266,7 @@
 		const reflectionGroup = new THREE.Group();
 		reflectionGroup.name = 'RiverMoonReflection';
 
-		const reflectionCount = 200;
+		const reflectionCount = 260;
 
 		// Simpan data untuk animasi kilauan.
 		const shimmerMeshes: {
@@ -308,12 +308,16 @@
 
 			// Kilauan pendek dengan ukuran bervariasi.
 			const lineWidth =
-				THREE.MathUtils.randFloat(0.08, 0.2) * (1 + 0.2 * middleFactor + 0.35 * foregroundFactor);
+				THREE.MathUtils.randFloat(0.09, 0.22) * (1 + 0.2 * middleFactor + 0.35 * foregroundFactor);
+
+			const lengthRoll = Math.random();
 
 			const lineLength =
-				(Math.random() < 0.18
-					? THREE.MathUtils.randFloat(0.05, 0.09)
-					: THREE.MathUtils.randFloat(0.02, 0.05)) *
+				(lengthRoll < 0.12
+					? THREE.MathUtils.randFloat(0.07, 0.12)
+					: lengthRoll < 0.4
+						? THREE.MathUtils.randFloat(0.04, 0.075)
+						: THREE.MathUtils.randFloat(0.02, 0.05)) *
 				(1 + 0.15 * middleFactor + 0.3 * foregroundFactor);
 
 			const reflectionGeometry = new THREE.PlaneGeometry(lineWidth, lineLength);
@@ -325,8 +329,8 @@
 			const isBright = Math.random() < brightChance;
 
 			const baseOpacity = isBright
-				? THREE.MathUtils.randFloat(0.55, 0.78)
-				: THREE.MathUtils.randFloat(0.22, 0.42);
+				? THREE.MathUtils.randFloat(0.58, 0.8)
+				: THREE.MathUtils.randFloat(0.25, 0.44);
 
 			const reflectionMaterial = new THREE.MeshBasicMaterial({
 				color: isBright ? '#ffe8b5' : '#d4dce0',
@@ -451,7 +455,7 @@
 				const foreground = shimmer.distanceFactor;
 
 				// Perubahan terang-redup lebih kuat di foreground.
-				const waveStrength = 0.35 + 0.4 * foreground;
+				const waveStrength = 0.4 + 0.3 * foreground;
 
 				const wave =
 					1 -
@@ -459,7 +463,7 @@
 					waveStrength * (0.5 + 0.5 * Math.sin(time * shimmer.speed + shimmer.phase));
 
 				const secondaryWave =
-					0.9 + 0.1 * Math.sin(time * shimmer.speed * 0.65 + shimmer.phase * 1.8);
+					0.94 + 0.06 * Math.sin(time * shimmer.speed * 0.7 + shimmer.phase * 1.8);
 
 				material.opacity = shimmer.baseOpacity * wave * secondaryWave;
 			}

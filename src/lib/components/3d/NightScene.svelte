@@ -5,15 +5,16 @@
 	import Stars from './Stars.svelte';
 	import Clouds from './Clouds.svelte';
 	import Hills from './Hills.svelte';
-	import ForegroundHills from './ForegroundHills.svelte';
-	import Trees from './Trees.svelte';
 	import MountainFog from './MountainFog.svelte';
+	import SnowTerrain from './SnowTerrain.svelte';
+	import Trees from './Trees.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
 
 	let updateStars: ((time: number) => void) | undefined;
 	let updateClouds: ((time: number) => void) | undefined;
+	let updateSnowTerrain: ((time: number) => void) | undefined;
 
 	onMount(() => {
 		if (!canvas) return;
@@ -98,6 +99,7 @@
 
 			updateStars?.(time);
 			updateClouds?.(time);
+			updateSnowTerrain?.(time);
 
 			// Batas gerakan kamera agar komposisi tetap terjaga.
 			cameraTargetPosition.set(
@@ -155,7 +157,12 @@
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />
 		<MountainFog {scene} />
-		<ForegroundHills {scene} />
+		<SnowTerrain
+			{scene}
+			registerUpdate={(callback) => {
+				updateSnowTerrain = callback;
+			}}
+		/>
 		<Trees {scene} />
 	{/if}
 </div>

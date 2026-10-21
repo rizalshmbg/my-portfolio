@@ -52,7 +52,7 @@
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		const ambientLight = new THREE.AmbientLight('#8791a3', 0.65);
+		const ambientLight = new THREE.AmbientLight('#8791a3', 0.55);
 		scene.add(ambientLight);
 
 		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 2);

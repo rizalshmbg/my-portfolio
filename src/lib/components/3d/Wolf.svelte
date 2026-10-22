@@ -121,6 +121,13 @@
 			}
 
 			ground.parent?.remove(ground);
+			ground.geometry.dispose();
+
+			const materials = Array.isArray(ground.material) ? ground.material : [ground.material];
+
+			for (const material of materials) {
+				material.dispose();
+			}
 
 			console.info('[Wolf] Mesh alas berhasil dihapus:', ground.name);
 		}
@@ -203,7 +210,8 @@
 						material instanceof THREE.MeshStandardMaterial ||
 						material instanceof THREE.MeshPhysicalMaterial
 					) {
-						material.color.multiplyScalar(0.55);
+						// material.color.multiplyScalar(0.55);
+						material.color.set('#747985');
 						material.roughness = 1;
 						material.metalness = 0;
 					}

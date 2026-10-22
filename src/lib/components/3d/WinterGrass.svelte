@@ -556,19 +556,17 @@
 		}
 
 		// ================================================
-		// GRASS NEXT TO THE ACTUAL LEFT-BANK ROCKS
-		// Koordinat batu kecil disamakan dengan SnowRocks.svelte.
+		// CLUSTER GRASS AROUND LEFT-BANK ROCKS
 		// ================================================
 
-		const rockEdgeGrassRandom = createRandom(8612);
-		let rockEdgeGrassId = 0;
+		const rockSimulationRandom = createRandom(8612);
+		const clusterGrassRandom = createRandom(92541);
 
 		for (let localZ = 1; localZ <= 16; localZ += 1.25) {
 			for (const side of [-1, 1]) {
-				// Harus identik dengan loop batu.
-				if (rockEdgeGrassRandom() < 0.35) continue;
+				if (rockSimulationRandom() < 0.35) continue;
 
-				const rockZ = localZ + randomRange(rockEdgeGrassRandom, -0.35, 0.35);
+				const rockZ = localZ + randomRange(rockSimulationRandom, -0.35, 0.35);
 
 				const nz = rockZ / (TERRAIN.depth / 2);
 				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
@@ -581,56 +579,52 @@
 
 				const riverWidth = 3.8 * widthVariation * endFade;
 
-				// Ambil offset batu dengan urutan random yang sama.
-				const rockOffset = riverWidth + randomRange(rockEdgeGrassRandom, 0.15, 0.5);
+				const rockOffset = riverWidth + randomRange(rockSimulationRandom, 0.15, 0.5);
 
-				// Batu menggunakan random berikutnya untuk ukurannya.
-				randomRange(rockEdgeGrassRandom, 0.16, 0.34);
+				const rockSize = randomRange(rockSimulationRandom, 0.16, 0.34);
 
-				// Fokus pada batu di sisi kiri sungai.
+				// Fokus pada sisi kiri sungai.
 				if (side !== -1) continue;
 
-				// Tambahkan rumput di sisi luar batu.
-				const grassX = riverCenterX - rockOffset - randomRange(rockEdgeGrassRandom, 0.18, 0.38);
+				// Pilih sebagian batu agar rumput tidak terlalu padat.
+				if (clusterGrassRandom() < 0.35) continue;
 
-				const nx = grassX / (TERRAIN.width / 2);
-				const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+				const rockX = riverCenterX - rockOffset;
 
-				if (riverDistance < 3.0) continue;
-				if (Math.abs(grassX) > TERRAIN.width / 2 - 2) continue;
-				if (Math.abs(rockZ) > TERRAIN.depth / 2 - 1) continue;
+				// Rumpun utama berada dekat sisi luar batu.
+				const baseX = rockX - rockSize * 1.1 - randomRange(clusterGrassRandom, 0.08, 0.18);
 
-				const height = terrainHeight(grassX, rockZ);
-				const tuft = createGrassTuft(rockEdgeGrassRandom);
+				const baseZ = rockZ + randomRange(clusterGrassRandom, -0.12, 0.12);
 
-				// Rumput pendamping dibuat lebih kecil dari rumpun utama.
-				tuft.scale.multiplyScalar(randomRange(rockEdgeGrassRandom, 0.65, 0.85));
+				const positions = [
+					{ x: baseX, z: baseZ, scale: 0.72 },
+					{
+						x: baseX - randomRange(clusterGrassRandom, 0.12, 0.22),
+						z: baseZ + randomRange(clusterGrassRandom, -0.16, 0.16),
+						scale: 0.55
+					}
+				];
 
-				tuft.position.set(
-					TERRAIN.centerX + grassX,
-					TERRAIN.centerY + height,
-					TERRAIN.centerZ + rockZ
-				);
+				for (const position of positions) {
+					const nx = position.x / (TERRAIN.width / 2);
+					const pz = position.z / (TERRAIN.depth / 2);
 
-				grassGroup.add(tuft);
-				rockEdgeGrassId++;
+					const riverDistance = Math.abs(nx - riverCenterNX(pz)) * (TERRAIN.width / 2);
 
-				// Tambahkan rumpun kedua pada sebagian posisi.
-				if (rockEdgeGrassId % 3 === 0) {
-					const extraX = grassX - randomRange(rockEdgeGrassRandom, 0.12, 0.22);
+					if (riverDistance < 3.0) continue;
+					if (Math.abs(position.x) > TERRAIN.width / 2 - 2) continue;
+					if (Math.abs(position.z) > TERRAIN.depth / 2 - 1) continue;
 
-					const extraZ = rockZ + randomRange(rockEdgeGrassRandom, -0.16, 0.16);
+					const tuft = createGrassTuft(clusterGrassRandom);
+					tuft.scale.multiplyScalar(position.scale * randomRange(clusterGrassRandom, 0.85, 1.15));
 
-					const extraTuft = createGrassTuft(rockEdgeGrassRandom);
-					extraTuft.scale.multiplyScalar(0.65);
-
-					extraTuft.position.set(
-						TERRAIN.centerX + extraX,
-						TERRAIN.centerY + terrainHeight(extraX, extraZ),
-						TERRAIN.centerZ + extraZ
+					tuft.position.set(
+						TERRAIN.centerX + position.x,
+						TERRAIN.centerY + terrainHeight(position.x, position.z),
+						TERRAIN.centerZ + position.z
 					);
 
-					grassGroup.add(extraTuft);
+					grassGroup.add(tuft);
 				}
 			}
 		}

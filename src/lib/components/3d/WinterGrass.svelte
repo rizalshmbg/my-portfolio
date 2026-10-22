@@ -474,6 +474,167 @@
 			}
 		}
 
+		// ================================================
+		// GRASS SIDE ROCKS
+		// ================================================
+		const rockSideGrassRandom = createRandom(8612);
+		let rockSideGrassId = 0;
+
+		for (let localZ = 1; localZ <= 16; localZ += 1.25) {
+			for (const side of [-1, 1]) {
+				// Harus sama dengan peluang skip di SnowRocks.svelte.
+				if (rockSideGrassRandom() < 0.35) continue;
+
+				const rockZ = localZ + randomRange(rockSideGrassRandom, -0.35, 0.35);
+
+				const nz = rockZ / (TERRAIN.depth / 2);
+				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
+
+				const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+				const t = (rockZ - (-TERRAIN.depth / 2 + 0.5)) / (TERRAIN.depth - 1);
+
+				const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+				const riverWidth = 3.8 * widthVariation * endFade;
+
+				// Konsumsi angka random yang sama dengan loop batu.
+				const bankOffset = riverWidth + randomRange(rockSideGrassRandom, 0.15, 0.5);
+
+				// Ukuran batu tidak diperlukan untuk rumput, tetapi angka
+				// random ini harus tetap dikonsumsi agar urutan seed cocok.
+				randomRange(rockSideGrassRandom, 0.16, 0.34);
+
+				// Fokus pada tepi kiri sungai.
+				if (side !== -1) continue;
+
+				// Letakkan rumput sedikit ke arah luar dari batu.
+				const grassX = riverCenterX - bankOffset - randomRange(rockSideGrassRandom, 0.12, 0.32);
+
+				// Batasi agar tidak terlalu dekat dengan air atau tepi terrain.
+				const nx = grassX / (TERRAIN.width / 2);
+				const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+
+				if (riverDistance < 3.0) continue;
+				if (Math.abs(grassX) > TERRAIN.width / 2 - 2) continue;
+				if (Math.abs(rockZ) > TERRAIN.depth / 2 - 1) continue;
+
+				const height = terrainHeight(grassX, rockZ);
+				const tuft = createGrassTuft(createRandom(61000 + rockSideGrassId * 31));
+
+				tuft.scale.multiplyScalar(randomRange(rockSideGrassRandom, 0.65, 0.9));
+
+				tuft.position.set(
+					TERRAIN.centerX + grassX,
+					TERRAIN.centerY + height,
+					TERRAIN.centerZ + rockZ
+				);
+
+				grassGroup.add(tuft);
+				rockSideGrassId++;
+
+				// Sebagian batu diberi satu rumpun tambahan agar terlihat alami.
+				if (rockSideGrassRandom() > 0.55) {
+					const extraX = grassX - randomRange(rockSideGrassRandom, 0.12, 0.25);
+					const extraZ = rockZ + randomRange(rockSideGrassRandom, -0.18, 0.18);
+
+					const extraHeight = terrainHeight(extraX, extraZ);
+					const extraTuft = createGrassTuft(createRandom(72000 + rockSideGrassId * 37));
+
+					extraTuft.scale.multiplyScalar(0.65);
+
+					extraTuft.position.set(
+						TERRAIN.centerX + extraX,
+						TERRAIN.centerY + extraHeight,
+						TERRAIN.centerZ + extraZ
+					);
+
+					grassGroup.add(extraTuft);
+					rockSideGrassId++;
+				}
+			}
+		}
+
+		// ================================================
+		// GRASS NEXT TO THE ACTUAL LEFT-BANK ROCKS
+		// Koordinat batu kecil disamakan dengan SnowRocks.svelte.
+		// ================================================
+
+		const rockEdgeGrassRandom = createRandom(8612);
+		let rockEdgeGrassId = 0;
+
+		for (let localZ = 1; localZ <= 16; localZ += 1.25) {
+			for (const side of [-1, 1]) {
+				// Harus identik dengan loop batu.
+				if (rockEdgeGrassRandom() < 0.35) continue;
+
+				const rockZ = localZ + randomRange(rockEdgeGrassRandom, -0.35, 0.35);
+
+				const nz = rockZ / (TERRAIN.depth / 2);
+				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
+
+				const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+				const t = (rockZ - (-TERRAIN.depth / 2 + 0.5)) / (TERRAIN.depth - 1);
+
+				const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+				const riverWidth = 3.8 * widthVariation * endFade;
+
+				// Ambil offset batu dengan urutan random yang sama.
+				const rockOffset = riverWidth + randomRange(rockEdgeGrassRandom, 0.15, 0.5);
+
+				// Batu menggunakan random berikutnya untuk ukurannya.
+				randomRange(rockEdgeGrassRandom, 0.16, 0.34);
+
+				// Fokus pada batu di sisi kiri sungai.
+				if (side !== -1) continue;
+
+				// Tambahkan rumput di sisi luar batu.
+				const grassX = riverCenterX - rockOffset - randomRange(rockEdgeGrassRandom, 0.18, 0.38);
+
+				const nx = grassX / (TERRAIN.width / 2);
+				const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+
+				if (riverDistance < 3.0) continue;
+				if (Math.abs(grassX) > TERRAIN.width / 2 - 2) continue;
+				if (Math.abs(rockZ) > TERRAIN.depth / 2 - 1) continue;
+
+				const height = terrainHeight(grassX, rockZ);
+				const tuft = createGrassTuft(rockEdgeGrassRandom);
+
+				// Rumput pendamping dibuat lebih kecil dari rumpun utama.
+				tuft.scale.multiplyScalar(randomRange(rockEdgeGrassRandom, 0.65, 0.85));
+
+				tuft.position.set(
+					TERRAIN.centerX + grassX,
+					TERRAIN.centerY + height,
+					TERRAIN.centerZ + rockZ
+				);
+
+				grassGroup.add(tuft);
+				rockEdgeGrassId++;
+
+				// Tambahkan rumpun kedua pada sebagian posisi.
+				if (rockEdgeGrassId % 3 === 0) {
+					const extraX = grassX - randomRange(rockEdgeGrassRandom, 0.12, 0.22);
+
+					const extraZ = rockZ + randomRange(rockEdgeGrassRandom, -0.16, 0.16);
+
+					const extraTuft = createGrassTuft(rockEdgeGrassRandom);
+					extraTuft.scale.multiplyScalar(0.65);
+
+					extraTuft.position.set(
+						TERRAIN.centerX + extraX,
+						TERRAIN.centerY + terrainHeight(extraX, extraZ),
+						TERRAIN.centerZ + extraZ
+					);
+
+					grassGroup.add(extraTuft);
+				}
+			}
+		}
+
 		scene.add(grassGroup);
 
 		// ================================================

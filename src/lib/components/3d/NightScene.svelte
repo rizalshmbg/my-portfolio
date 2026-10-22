@@ -10,6 +10,7 @@
 	import WinterGrass from './WinterGrass.svelte';
 	import SnowRocks from './SnowRocks.svelte';
 	import Trees from './Trees.svelte';
+	import Wolf from './Wolf.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
@@ -17,6 +18,7 @@
 	let updateStars: ((time: number) => void) | undefined;
 	let updateClouds: ((time: number) => void) | undefined;
 	let updateSnowTerrain: ((time: number) => void) | undefined;
+	let updateWolf: ((time: number) => void) | undefined;
 
 	onMount(() => {
 		if (!canvas) return;
@@ -102,6 +104,7 @@
 			updateStars?.(time);
 			updateClouds?.(time);
 			updateSnowTerrain?.(time);
+			updateWolf?.(time);
 
 			// Batas gerakan kamera agar komposisi tetap terjaga.
 			cameraTargetPosition.set(
@@ -168,6 +171,12 @@
 		<SnowRocks {scene} />
 		<WinterGrass {scene} />
 		<Trees {scene} />
+		<Wolf
+			{scene}
+			registerUpdate={(callback) => {
+				updateWolf = callback;
+			}}
+		/>
 	{/if}
 </div>
 

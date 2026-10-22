@@ -162,7 +162,7 @@
 			stem.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
 
 			stem.scale.y = length;
-			stem.castShadow = false;
+			stem.castShadow = true;
 			stem.receiveShadow = true;
 
 			tuft.add(stem);

@@ -176,7 +176,7 @@
 
 			rock.rotation.set(range(random, -0.15, 0.15), random() * Math.PI, range(random, -0.18, 0.18));
 
-			rock.castShadow = false;
+			rock.castShadow = true;
 			rock.receiveShadow = true;
 
 			rockGroup.add(rock);

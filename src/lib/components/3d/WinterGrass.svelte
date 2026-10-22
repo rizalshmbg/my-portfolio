@@ -290,6 +290,190 @@
 			}
 		}
 
+		// ================================================
+		// GRASS AROUND ROCKS ON THE RIGHT RIVER BANK
+		// ================================================
+
+		const rightBankRandom = createRandom(73521);
+
+		for (let z = 2.5; z <= 15; z += 2.3) {
+			// Sisakan beberapa bagian tepian tanpa rumput.
+			if (rightBankRandom() < 0.25) continue;
+
+			const localZ = z + randomRange(rightBankRandom, -0.65, 0.65);
+			const nz = localZ / (TERRAIN.depth / 2);
+
+			const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
+
+			// Samakan lebar sungai dengan SnowTerrain.svelte.
+			const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+			const t = (localZ - (-TERRAIN.depth / 2 + 0.5)) / (TERRAIN.depth - 1);
+
+			const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+			const riverWidth = 3.8 * widthVariation * endFade;
+
+			// Tempatkan rumput di daratan, dekat bebatuan kanan.
+			const localX = riverCenterX + riverWidth + randomRange(rightBankRandom, 0.45, 1.15);
+
+			const nx = localX / (TERRAIN.width / 2);
+			const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+
+			// Pastikan rumput tidak masuk ke sungai atau keluar terrain.
+			if (riverDistance < 3.0) continue;
+			if (Math.abs(localX) > TERRAIN.width / 2 - 2) continue;
+
+			const height = terrainHeight(localX, localZ);
+			const tuft = createGrassTuft(rightBankRandom);
+
+			tuft.position.set(
+				TERRAIN.centerX + localX,
+				TERRAIN.centerY + height,
+				TERRAIN.centerZ + localZ
+			);
+
+			grassGroup.add(tuft);
+
+			// Kadang tambahkan satu rumpun kecil di dekat rumpun utama.
+			if (rightBankRandom() > 0.55) {
+				const nearbyX = localX + randomRange(rightBankRandom, -0.45, 0.45);
+
+				const nearbyZ = localZ + randomRange(rightBankRandom, -0.35, 0.35);
+
+				const nearbyHeight = terrainHeight(nearbyX, nearbyZ);
+
+				const nearbyTuft = createGrassTuft(rightBankRandom);
+				nearbyTuft.scale.multiplyScalar(0.7);
+
+				nearbyTuft.position.set(
+					TERRAIN.centerX + nearbyX,
+					TERRAIN.centerY + nearbyHeight,
+					TERRAIN.centerZ + nearbyZ
+				);
+
+				grassGroup.add(nearbyTuft);
+			}
+		}
+
+		// ================================================
+		// GRASS AROUND FOREGROUND RIVER ROCKS
+		// ================================================
+
+		const foregroundGrassRandom = createRandom(84217);
+
+		// Area foreground yang berdekatan dengan batu sungai.
+		// Koordinat Z mengikuti sistem koordinat lokal terrain.
+		const foregroundAnchors = [
+			// Sisi kiri sungai: area yang dilingkari merah
+			{ z: 15.0, side: -1, count: 3 },
+			{ z: 16.0, side: -1, count: 4 },
+			{ z: 17.0, side: -1, count: 4 },
+			{ z: 17.5, side: -1, count: 4 },
+			{ z: 18.0, side: -1, count: 3 },
+
+			// Sisi kanan sungai: pertahankan sebaran sebelumnya
+			{ z: 13.5, side: 1, count: 3 },
+			{ z: 15.0, side: 1, count: 4 },
+			{ z: 16.0, side: 1, count: 3 }
+		];
+
+		for (const anchor of foregroundAnchors) {
+			for (let i = 0; i < anchor.count; i++) {
+				const grassZ = anchor.z + randomRange(foregroundGrassRandom, -0.5, 0.5);
+
+				const nz = grassZ / (TERRAIN.depth / 2);
+
+				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
+
+				const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+				const t = (grassZ - (-TERRAIN.depth / 2 + 0.5)) / (TERRAIN.depth - 1);
+
+				const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+				const riverWidth = 3.8 * widthVariation * endFade;
+
+				// Variasikan jarak rumpun dari tepian air.
+				const bankOffset = randomRange(foregroundGrassRandom, 0.3, 0.85);
+
+				const localX = riverCenterX + anchor.side * (riverWidth + bankOffset);
+
+				const nx = localX / (TERRAIN.width / 2);
+
+				const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+
+				if (riverDistance < 3.0) continue;
+
+				if (Math.abs(localX) > TERRAIN.width / 2 - 2 || Math.abs(grassZ) > TERRAIN.depth / 2 - 1) {
+					continue;
+				}
+
+				const height = terrainHeight(localX, grassZ);
+				const tuft = createGrassTuft(foregroundGrassRandom);
+
+				tuft.scale.multiplyScalar(randomRange(foregroundGrassRandom, 0.65, 0.9));
+
+				tuft.position.set(
+					TERRAIN.centerX + localX,
+					TERRAIN.centerY + height,
+					TERRAIN.centerZ + grassZ
+				);
+
+				grassGroup.add(tuft);
+			}
+		}
+
+		// ================================================
+		// EXTRA GRASS - LEFT FOREGROUND
+		// ================================================
+
+		const leftForegroundRandom = createRandom(91357);
+
+		const leftForegroundAnchors = [
+			{ z: 15.5, count: 3 },
+			{ z: 16.5, count: 4 },
+			{ z: 17.5, count: 4 }
+		];
+
+		for (const anchor of leftForegroundAnchors) {
+			for (let i = 0; i < anchor.count; i++) {
+				const grassZ = anchor.z + randomRange(leftForegroundRandom, -0.35, 0.35);
+
+				const nz = grassZ / (TERRAIN.depth / 2);
+				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
+
+				const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+				const t = (grassZ - (-TERRAIN.depth / 2 + 0.5)) / (TERRAIN.depth - 1);
+
+				const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+				const riverWidth = 3.8 * widthVariation * endFade;
+
+				const localX = riverCenterX - riverWidth - randomRange(leftForegroundRandom, 0.35, 0.8);
+
+				const nx = localX / (TERRAIN.width / 2);
+
+				const riverDistance = Math.abs(nx - riverCenterNX(nz)) * (TERRAIN.width / 2);
+
+				if (riverDistance < 3.0) continue;
+
+				const height = terrainHeight(localX, grassZ);
+				const tuft = createGrassTuft(leftForegroundRandom);
+
+				tuft.scale.multiplyScalar(randomRange(leftForegroundRandom, 0.6, 0.85));
+
+				tuft.position.set(
+					TERRAIN.centerX + localX,
+					TERRAIN.centerY + height,
+					TERRAIN.centerZ + grassZ
+				);
+
+				grassGroup.add(tuft);
+			}
+		}
+
 		scene.add(grassGroup);
 
 		// ================================================

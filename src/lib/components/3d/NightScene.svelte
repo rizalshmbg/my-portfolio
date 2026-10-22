@@ -7,6 +7,8 @@
 	import Hills from './Hills.svelte';
 	import MountainFog from './MountainFog.svelte';
 	import SnowTerrain from './SnowTerrain.svelte';
+	import WinterGrass from './WinterGrass.svelte';
+	import SnowRocks from './SnowRocks.svelte';
 	import Trees from './Trees.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
@@ -163,6 +165,8 @@
 				updateSnowTerrain = callback;
 			}}
 		/>
+		<SnowRocks {scene} />
+		<WinterGrass {scene} />
 		<Trees {scene} />
 	{/if}
 </div>

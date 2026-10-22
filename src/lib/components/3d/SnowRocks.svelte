@@ -52,8 +52,7 @@
 		const largeRockGeometry = new THREE.IcosahedronGeometry(1, 1);
 		const positions = largeRockGeometry.attributes.position;
 
-		// Geometri khusus salju berbentuk kubah.
-		// Bagian bawah datar, bagian atas membulat.
+		// Kubah salju dengan bentuk sedikit tidak beraturan.
 		const largeSnowGeometry = new THREE.SphereGeometry(1, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2);
 		geometries.push(largeSnowGeometry);
 
@@ -64,7 +63,8 @@
 		const snowMaterial = new THREE.MeshStandardMaterial({
 			color: '#d9dce2',
 			roughness: 1,
-			flatShading: true
+			flatShading: true,
+			side: THREE.DoubleSide
 		});
 
 		materials.push(snowMaterial);
@@ -161,16 +161,16 @@
 			);
 
 			// Lebar dan tinggi tidak sama agar bentuknya alami.
-			const sx = size * range(random, 0.9, 1.15);
-			const sy = size * (isLarge ? range(random, 0.85, 1.1) : range(random, 0.75, 1.05));
-			const sz = size * range(random, 0.9, 1.15);
+			const sx = size * (isLarge ? range(random, 0.85, 1.1) : range(random, 0.9, 1.15));
+			const sy = size * (isLarge ? range(random, 0.95, 1.25) : range(random, 0.75, 1.05));
+			const sz = size * (isLarge ? range(random, 0.85, 1.1) : range(random, 0.9, 1.15));
 
 			rock.scale.set(sx, sy, sz);
 
 			// Sebagian batu tertanam di dalam permukaan salju.
 			rock.position.set(
 				TERRAIN.centerX + localX,
-				TERRAIN.centerY + height - sy * (isLarge ? 0.6 : 0.58),
+				TERRAIN.centerY + height - sy * (isLarge ? 0.68 : 0.58),
 				TERRAIN.centerZ + localZ
 			);
 
@@ -188,14 +188,11 @@
 			const snowCap = new THREE.Mesh(snowGeometry, snowMaterial);
 
 			if (isLarge) {
-				// Salju melebar dan membulat di atas batu besar.
 				snowCap.scale.set(sx * 1.05, sy * 0.38, sz * 1.05);
 
-				// Dasar kubah sedikit masuk ke dalam batu
-				// agar tidak tampak melayang.
-				snowCap.position.set(rock.position.x, rock.position.y + sy * 0.7, rock.position.z);
+				snowCap.position.set(rock.position.x, rock.position.y + sy * 0.68, rock.position.z);
 			} else {
-				// Pertahankan tampilan salju batu kecil.
+				// Pertahankan salju batu kecil.
 				snowCap.scale.set(sx * 1.08, sy * 0.28, sz * 1.08);
 
 				snowCap.position.set(rock.position.x, rock.position.y + sy * 0.68, rock.position.z);
@@ -261,9 +258,9 @@
 		for (let localZ = 2; localZ <= 15; localZ += 2.3) {
 			for (const side of [-1, 1]) {
 				// Sisakan beberapa bagian tepian tanpa batu agar alami
-				if (largeRockRandom() < (side === -1 ? 0.45 : 0.15)) continue;
+				if (largeRockRandom() < (side === -1 ? 0.45 : 0.05)) continue;
 
-				const rockZ = localZ + range(largeRockRandom, -0.45, 0.45);
+				const rockZ = localZ + range(largeRockRandom, -0.75, 0.75);
 
 				const nz = rockZ / (TERRAIN.depth / 2);
 				const riverCenterX = riverCenterNX(nz) * (TERRAIN.width / 2);
@@ -278,13 +275,15 @@
 				const actualRiverWidth = riverHalfWidth * widthVariation * endFade;
 
 				// Ukuran batu utama lebih besar daripada batu yang sudah ada
-				const size = range(largeRockRandom, 0.55, 0.85);
+				const size = range(largeRockRandom, 0.45, 0.9);
 
-				// Pusat batu berada di daratan, tetapi tepinya boleh
-				// sedikit menjorok ke sungai.
-				const bankOffset = actualRiverWidth + size * 0.25;
+				// Variasikan jarak batu dari air agar tidak membentuk garis.
+				const bankOffset =
+					actualRiverWidth +
+					size * range(largeRockRandom, 0.05, 0.55) +
+					range(largeRockRandom, -0.2, 0.45);
 
-				const localX = riverCenterX + side * (bankOffset + range(largeRockRandom, -0.08, 0.18));
+				const localX = riverCenterX + side * bankOffset;
 
 				addRock(localX, rockZ, 5000 + largeRockId * 53, size, true);
 

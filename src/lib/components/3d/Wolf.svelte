@@ -198,6 +198,17 @@
 				// Posisi lokal agar kaki model berada di dasar root.
 				const modelGroundOffset = -sourceBounds.min.y * modelScale;
 
+				for (const material of sourceMaterials) {
+					if (
+						material instanceof THREE.MeshStandardMaterial ||
+						material instanceof THREE.MeshPhysicalMaterial
+					) {
+						material.color.multiplyScalar(0.55);
+						material.roughness = 1;
+						material.metalness = 0;
+					}
+				}
+
 				// =========================================
 				// BUAT LIMA SERIGALA
 				// =========================================
@@ -237,22 +248,6 @@
 
 						object.castShadow = true;
 						object.receiveShadow = true;
-
-						const originalMaterials = Array.isArray(object.material)
-							? object.material
-							: [object.material];
-
-						originalMaterials.forEach((material) => {
-							if (
-								material instanceof THREE.MeshStandardMaterial ||
-								material instanceof THREE.MeshPhysicalMaterial
-							) {
-								// material.color.set('#747985');
-								material.color.multiplyScalar(0.55);
-								material.roughness = 1;
-								material.metalness = 0;
-							}
-						});
 					});
 
 					scene.add(group);

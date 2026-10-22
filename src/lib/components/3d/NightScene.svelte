@@ -51,7 +51,7 @@
 		});
 
 		renderer.shadowMap.enabled = true;
-		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		renderer.shadowMap.type = THREE.PCFShadowMap;
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;

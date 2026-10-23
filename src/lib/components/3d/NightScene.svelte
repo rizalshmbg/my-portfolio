@@ -6,6 +6,7 @@
 	import Clouds from './Clouds.svelte';
 	import Hills from './Hills.svelte';
 	import MountainFog from './MountainFog.svelte';
+	import CabinPath from './CabinPath.svelte';
 	import Cabin from './Cabin.svelte';
 	import SnowTerrain from './SnowTerrain.svelte';
 	import WinterGrass from './WinterGrass.svelte';
@@ -164,6 +165,7 @@
 		<Hills {scene} />
 		<MountainFog {scene} />
 		<Cabin {scene} />
+		<CabinPath {scene} />
 		<SnowTerrain
 			{scene}
 			registerUpdate={(callback) => {

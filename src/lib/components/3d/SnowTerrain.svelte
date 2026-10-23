@@ -260,11 +260,93 @@
 
 		scene.add(river);
 
+		// ================================================
+		// SILVER MOONLIGHT REFLECTION
+		// ================================================
+
+		const reflectionGroup = new THREE.Group();
+		reflectionGroup.name = 'MoonlightRiverReflection';
+
+		const reflectionCount = 300;
+
+		for (let i = 0; i < reflectionCount; i++) {
+			// Konsentrasikan pantulan pada bagian tengah hingga foreground.
+			const t = 0.48 + Math.pow(Math.random(), 1.5) * 0.4;
+
+			const localZ = THREE.MathUtils.lerp(-TERRAIN.depth / 2 + 0.5, TERRAIN.depth / 2 - 0.5, t);
+
+			const nz = localZ / (TERRAIN.depth / 2);
+
+			// Pusat sungai pada titik ini.
+			const centerNX = riverCenterNX(nz);
+			const centerLocalX = centerNX * (TERRAIN.width / 2);
+
+			const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
+
+			const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
+
+			const riverWidth = halfWidth * widthVariation * endFade;
+			const foreground = THREE.MathUtils.smoothstep(t, 0.35, 0.95);
+
+			// Kilauan lebih terkonsentrasi di dekat sumbu sungai.
+			const spread = 0.08 + foreground * 0.16;
+
+			const localX =
+				centerLocalX + THREE.MathUtils.randFloat(-riverWidth * spread, riverWidth * spread);
+
+			const waterY = TERRAIN.centerY + terrainHeight(localX, localZ) + 0.075;
+
+			// Ukuran kilauan pendek dan tipis.
+			const isBright = Math.random() < 0.22 + foreground * 0.12;
+
+			const streakWidth = isBright
+				? THREE.MathUtils.randFloat(0.16, 0.34)
+				: THREE.MathUtils.randFloat(0.07, 0.18);
+
+			const streakLength = THREE.MathUtils.randFloat(0.012, 0.026);
+
+			const geometry = new THREE.PlaneGeometry(streakWidth, streakLength);
+
+			geometry.rotateX(-Math.PI / 2);
+
+			const material = new THREE.MeshBasicMaterial({
+				color: isBright ? '#e8dfc8' : '#9ca9b3',
+				transparent: true,
+				opacity: isBright
+					? THREE.MathUtils.randFloat(0.32, 0.52)
+					: THREE.MathUtils.randFloat(0.08, 0.18),
+				blending: THREE.NormalBlending,
+				depthWrite: false,
+				side: THREE.DoubleSide,
+				toneMapped: false
+			});
+
+			const streak = new THREE.Mesh(geometry, material);
+
+			streak.position.set(TERRAIN.centerX + localX, waterY, TERRAIN.centerZ + localZ);
+
+			// Arahkan kilauan mengikuti arah lokal lengkungan sungai.
+			const delta = 0.01;
+			const nextNX = riverCenterNX(nz + delta);
+			const prevNX = riverCenterNX(nz - delta);
+			const slopeX = (nextNX - prevNX) * (TERRAIN.width / 2);
+
+			// Rotasi kecil mengikuti perubahan arah alur sungai.
+			streak.rotation.y =
+				Math.atan2(slopeX, TERRAIN.depth * delta) + THREE.MathUtils.randFloat(-0.08, 0.08);
+
+			streak.renderOrder = 3;
+
+			reflectionGroup.add(streak);
+		}
+
+		scene.add(reflectionGroup);
 
 		return () => {
 			scene.remove(river);
 			scene.remove(leftSnow);
 			scene.remove(rightSnow);
+			scene.remove(reflectionGroup);
 
 			riverGeometry.dispose();
 			waterMaterial.dispose();
@@ -275,6 +357,17 @@
 				const material = bank.material;
 				if (material instanceof THREE.Material) {
 					material.dispose();
+				}
+			}
+
+			for (const child of reflectionGroup.children) {
+				if (child instanceof THREE.Mesh) {
+					child.geometry.dispose();
+
+					const material = child.material;
+					if (material instanceof THREE.Material) {
+						material.dispose();
+					}
 				}
 			}
 		};

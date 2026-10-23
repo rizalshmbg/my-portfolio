@@ -222,7 +222,7 @@
 		createCloud({
 			width: 13,
 			height: 8,
-			position: new THREE.Vector3(-30, 6.5, -42),
+			position: new THREE.Vector3(-28, 7.5, -42),
 			color: '#303744',
 			opacity: 0.82,
 			seed: 20,
@@ -230,9 +230,9 @@
 			direction: -1
 		});
 		createCloud({
-			width: 20,
+			width: 17,
 			height: 9,
-			position: new THREE.Vector3(-12, 6.5, -42),
+			position: new THREE.Vector3(-10, 6.5, -42),
 			color: '#292d33',
 			opacity: 1,
 			seed: 120,
@@ -243,9 +243,9 @@
 		createCloud({
 			width: 10,
 			height: 8,
-			position: new THREE.Vector3(2, 3, -42),
+			position: new THREE.Vector3(9, 6, -42),
 			color: '#41414a',
-			opacity: 1,
+			opacity: 0.62,
 			seed: 86,
 			speed: 0.14,
 			direction: -1
@@ -255,7 +255,17 @@
 		createCloud({
 			width: 10,
 			height: 8,
-			position: new THREE.Vector3(35, 9, -42),
+			position: new THREE.Vector3(22, 4, -42),
+			color: '#292d35',
+			opacity: 1,
+			seed: 62,
+			speed: 0.25,
+			direction: -1
+		});
+		createCloud({
+			width: 10,
+			height: 8,
+			position: new THREE.Vector3(33, 6, -42),
 			color: '#292f3a',
 			opacity:0.58,
 			seed: 62,
@@ -272,16 +282,7 @@
 			speed: 0.17,
 			direction: 1
 		});
-		createCloud({
-			width: 10,
-			height: 8,
-			position: new THREE.Vector3(30, 5, -42),
-			color: '#292d35',
-			opacity: 1,
-			seed: 62,
-			speed: 0.25,
-			direction: -1
-		});
+		
 
 		const updateClouds = (time: number) => {
 			for (const cloud of animatedClouds) {

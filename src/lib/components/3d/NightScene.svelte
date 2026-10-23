@@ -19,7 +19,6 @@
 
 	let updateStars: ((time: number) => void) | undefined;
 	let updateClouds: ((time: number) => void) | undefined;
-	let updateSnowTerrain: ((time: number) => void) | undefined;
 	let updateWolf: ((time: number) => void) | undefined;
 
 	onMount(() => {
@@ -105,7 +104,6 @@
 
 			updateStars?.(time);
 			updateClouds?.(time);
-			updateSnowTerrain?.(time);
 			updateWolf?.(time);
 
 			// Batas gerakan kamera agar komposisi tetap terjaga.
@@ -166,12 +164,7 @@
 		<MountainFog {scene} />
 		<Cabin {scene} />
 		<CabinPath {scene} />
-		<SnowTerrain
-			{scene}
-			registerUpdate={(callback) => {
-				updateSnowTerrain = callback;
-			}}
-		/>
+		<SnowTerrain {scene} />
 		<SnowRocks {scene} />
 		<WinterGrass {scene} />
 		<Trees {scene} />

@@ -303,7 +303,7 @@
 			const foreground = THREE.MathUtils.smoothstep(t, 0.35, 0.95);
 
 			// Kilauan lebih terkonsentrasi di dekat sumbu sungai.
-			const spread = 0.08 + foreground * 0.16;
+			const spread = 0.045 + foreground * 0.1;
 
 			const localX =
 				centerLocalX + THREE.MathUtils.randFloat(-riverWidth * spread, riverWidth * spread);
@@ -311,7 +311,7 @@
 			const waterY = TERRAIN.centerY + terrainHeight(localX, localZ) + 0.075;
 
 			// Ukuran kilauan pendek dan tipis.
-			const isBright = Math.random() < 0.22 + foreground * 0.12;
+			const isBright = Math.random() < 0.16 + foreground * 0.1;
 
 			const streakWidth = isBright
 				? THREE.MathUtils.randFloat(0.16, 0.34)
@@ -327,8 +327,8 @@
 				color: isBright ? '#e8dfc8' : '#9ca9b3',
 				transparent: true,
 				opacity: isBright
-					? THREE.MathUtils.randFloat(0.32, 0.52)
-					: THREE.MathUtils.randFloat(0.08, 0.18),
+					? THREE.MathUtils.randFloat(0.24, 0.4)
+					: THREE.MathUtils.randFloat(0.06, 0.14),
 				blending: THREE.NormalBlending,
 				depthWrite: false,
 				side: THREE.DoubleSide,

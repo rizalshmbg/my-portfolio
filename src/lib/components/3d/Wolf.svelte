@@ -211,7 +211,7 @@
 						material instanceof THREE.MeshPhysicalMaterial
 					) {
 						// material.color.multiplyScalar(0.55);
-						material.color.set('#747985');
+						material.color.set('#454B55');
 						material.roughness = 1;
 						material.metalness = 0;
 					}

@@ -23,7 +23,7 @@
 		const materials: THREE.Material[] = [];
 
 		const proceduralConfigs: ProceduralTreeConfig[] = [
-			{ x: -20, y: -1.5, z: -15, height: 30, seed: 33 },
+			{ x: -20, y: -1.5, z: -15, height: 20, seed: 33 },
 			{ x: -11, y: -2, z: -7, height: 10, seed: 11 },
 			{ x: 11, y: -1.5, z: -15, height: 5.3, seed: 44 },
 			{ x: 12, y: -1.5, z: -10, height: 15.4, seed: 55 },

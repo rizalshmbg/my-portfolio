@@ -154,7 +154,7 @@
 				}
 
 				// Animasi pertama adalah animasi berlari.
-				const runAnimation = gltf.animations[0];
+				const runAnimation = gltf.animations[1];
 
 				console.info(
 					'[Wolf] Animasi tersedia:',
@@ -205,17 +205,17 @@
 				// Posisi lokal agar kaki model berada di dasar root.
 				const modelGroundOffset = -sourceBounds.min.y * modelScale;
 
-				// for (const material of sourceMaterials) {
-				// 	if (
-				// 		material instanceof THREE.MeshStandardMaterial ||
-				// 		material instanceof THREE.MeshPhysicalMaterial
-				// 	) {
-				// 		// material.color.multiplyScalar(0.55);
-				// 		material.color.set('#7D8796');
-				// 		material.roughness = 1;
-				// 		material.metalness = 0;
-				// 	}
-				// }
+				for (const material of sourceMaterials) {
+					if (
+						material instanceof THREE.MeshStandardMaterial ||
+						material instanceof THREE.MeshPhysicalMaterial
+					) {
+						// material.color.multiplyScalar(0.55);
+						material.color.set('#454545');
+						material.roughness = 1;
+						material.metalness = 0;
+					}
+				}
 
 				// =========================================
 				// BUAT LIMA SERIGALA

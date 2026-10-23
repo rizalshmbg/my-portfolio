@@ -27,7 +27,8 @@
 		const currentCanvas = canvas;
 
 		scene = new THREE.Scene();
-		scene.background = new THREE.Color('#17191d');
+		const currentScene = scene;
+		currentScene.background = new THREE.Color('#17191d');
 
 		const camera = new THREE.PerspectiveCamera(
 			45,
@@ -57,10 +58,10 @@
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		const ambientLight = new THREE.AmbientLight('#8791a3', 0.55);
-		scene.add(ambientLight);
+		const ambientLight = new THREE.AmbientLight('#8791a3', 0.75);
+		currentScene.add(ambientLight);
 
-		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 0.8);
+		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 1);
 
 		directionalLight.position.set(-8, 20, -50);
 		directionalLight.target.position.set(0, 0, -10);
@@ -79,8 +80,17 @@
 		directionalLight.shadow.bias = -0.0001;
 		directionalLight.shadow.normalBias = 0.04;
 
-		scene.add(directionalLight);
-		scene.add(directionalLight.target);
+		currentScene.add(directionalLight);
+		currentScene.add(directionalLight.target);
+
+		// Fill light dingin untuk membantu menampilkan detail salju
+		// dan siluet serigala tanpa menambah bayangan baru.
+		const snowFillLight = new THREE.PointLight('#9eafcf', 12, 28, 2);
+
+		snowFillLight.position.set(8, 5, -20);
+		snowFillLight.castShadow = false;
+
+		currentScene.add(snowFillLight);
 
 		let animationFrame = 0;
 
@@ -123,7 +133,7 @@
 			camera.position.lerp(cameraTargetPosition, 0.07);
 			camera.lookAt(lookTarget);
 
-			renderer.render(scene!, camera);
+			renderer.render(currentScene!, camera);
 		}
 
 		animate();
@@ -146,6 +156,12 @@
 			cancelAnimationFrame(animationFrame);
 			window.removeEventListener('resize', resize);
 			currentCanvas.removeEventListener('mousemove', handleMouseMove);
+			currentScene.remove(snowFillLight);
+			snowFillLight.dispose();
+
+			currentScene.remove(directionalLight);
+			currentScene.remove(directionalLight.target);
+			currentScene.remove(ambientLight);
 
 			renderer.dispose();
 			scene = null;

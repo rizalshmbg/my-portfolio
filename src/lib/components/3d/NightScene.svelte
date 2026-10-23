@@ -6,11 +6,11 @@
 	import Clouds from './Clouds.svelte';
 	import Hills from './Hills.svelte';
 	import MountainFog from './MountainFog.svelte';
-	import CabinPath from './CabinPath.svelte';
 	import Cabin from './Cabin.svelte';
+	import CabinPath from './CabinPath.svelte';
 	import SnowTerrain from './SnowTerrain.svelte';
-	import WinterGrass from './WinterGrass.svelte';
 	import SnowRocks from './SnowRocks.svelte';
+	import WinterGrass from './WinterGrass.svelte';
 	import Trees from './Trees.svelte';
 	import Wolf from './Wolf.svelte';
 

@@ -67,7 +67,7 @@
 		const WOLF_COUNT = 5;
 
 		// Tinggi target setiap serigala dalam unit Three.js.
-		const TARGET_HEIGHT = 1.2;
+		const TARGET_HEIGHT = 0.8;
 
 		const TERRAIN = {
 			centerX: 8,

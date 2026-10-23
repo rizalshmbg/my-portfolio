@@ -173,7 +173,7 @@
 
 		createHill(40, 8, '#596273', new THREE.Vector3(-35, 0, -27), 'rolling', 'diagonal');
 		createHill(20, 5, '#505b6d', new THREE.Vector3(-23, -0.5, -29), 'peak', 'horizontal');
-		createHill(30, 7, '#626d7e', new THREE.Vector3(-10, 0, -32), 'ridge', 'vertical');
+		createHill(30, 7, '#626d7e', new THREE.Vector3(0, 0, -32), 'ridge', 'vertical');
 		createHill(20, 5, '#596273', new THREE.Vector3(35, 0, -30), 'rolling', 'diagonal');
 		createHill(30, 7, '#626d7e', new THREE.Vector3(35, 0, -32), 'peak', 'vertical');
 

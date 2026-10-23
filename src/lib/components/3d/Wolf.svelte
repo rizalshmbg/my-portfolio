@@ -19,12 +19,37 @@
 
 		const wolfGroups: THREE.Group[] = [];
 		const mixers: THREE.AnimationMixer[] = [];
-		const pawPrintGroups: THREE.Group[] = [];
+		const pawPrintGroups: THREE.Object3D[] = [];
 		const sourceGeometries: THREE.BufferGeometry[] = [];
 		const sourceMaterials: THREE.Material[] = [];
 
-		const pawGeometry = new THREE.CircleGeometry(1, 8);
-		pawGeometry.rotateX(-Math.PI / 2);
+		const pawShape = new THREE.Shape();
+
+		// Mulai dari sisi kiri bantalan telapak.
+		pawShape.moveTo(-0.13, 0.1);
+
+		// Sisi kiri telapak dan jari pertama.
+		pawShape.bezierCurveTo(-0.18, 0.04, -0.17, -0.02, -0.14, -0.06);
+		pawShape.bezierCurveTo(-0.12, -0.09, -0.1, -0.08, -0.09, -0.04);
+
+		// Jari kedua.
+		pawShape.bezierCurveTo(-0.08, -0.01, -0.09, -0.11, -0.045, -0.15);
+		pawShape.bezierCurveTo(-0.015, -0.17, 0.005, -0.12, 0.005, -0.07);
+
+		// Jari ketiga.
+		pawShape.bezierCurveTo(0.015, -0.02, 0.025, -0.15, 0.065, -0.15);
+		pawShape.bezierCurveTo(0.1, -0.14, 0.1, -0.08, 0.085, -0.04);
+
+		// Jari keempat dan sisi kanan telapak.
+		pawShape.bezierCurveTo(0.12, -0.01, 0.13, -0.06, 0.16, -0.04);
+		pawShape.bezierCurveTo(0.19, -0.02, 0.18, 0.04, 0.14, 0.1);
+
+		// Bantalan bawah telapak.
+		pawShape.bezierCurveTo(0.12, 0.17, 0.07, 0.2, 0, 0.2);
+		pawShape.bezierCurveTo(-0.07, 0.2, -0.12, 0.17, -0.13, 0.1);
+
+		const pawGeometry = new THREE.ShapeGeometry(pawShape, 8);
+		pawGeometry.rotateX(Math.PI / 2);
 
 		const pawMaterial = new THREE.MeshBasicMaterial({
 			color: '#35445b',
@@ -104,32 +129,8 @@
 		}
 
 		function createPawPrint(x: number, z: number) {
-			const paw = new THREE.Group();
+			const paw = new THREE.Mesh(pawGeometry, pawMaterial);
 
-			// Telapak utama.
-			const pad = new THREE.Mesh(pawGeometry, pawMaterial);
-			pad.scale.set(0.15, 1, 0.17);
-			pad.position.set(0, 0, 0);
-			paw.add(pad);
-
-			// Empat jari mengarah ke depan (+Z).
-			const toes = [
-				{ x: -0.1, z: 0.12, size: 0.06 },
-				{ x: -0.035, z: 0.17, size: 0.06 },
-				{ x: 0.035, z: 0.17, size: 0.06 },
-				{ x: 0.1, z: 0.12, size: 0.06 }
-			];
-
-			for (const toe of toes) {
-				const mesh = new THREE.Mesh(pawGeometry, pawMaterial);
-
-				mesh.scale.set(toe.size, 1, toe.size * 1.1);
-				mesh.position.set(toe.x, 0.002, toe.z);
-
-				paw.add(mesh);
-			}
-
-			// Sesuaikan posisi vertikal dengan kontur salju.
 			const localX = x - TERRAIN.centerX;
 			const localZ = z - TERRAIN.centerZ;
 

@@ -126,9 +126,9 @@
 					const color = new THREE.Color();
 
 					if (normalizedHeight < 0.48) {
-						color.set('#505d72').lerp(new THREE.Color('#a5b1c5'), normalizedHeight / 0.48);
+						color.set('#7d8ba2').lerp(new THREE.Color('#cbd5e4'), normalizedHeight / 0.48);
 					} else {
-						color.set('#a5b1c5').lerp(new THREE.Color('#e2e3e5'), (normalizedHeight - 0.48) / 0.52);
+						color.set('#cbd5e4').lerp(new THREE.Color('#f0f1f5'), (normalizedHeight - 0.48) / 0.52);
 					}
 
 					// Variasi warna halus untuk menghindari permukaan salju yang monoton.

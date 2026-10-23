@@ -17,7 +17,7 @@
 		// --------------------------------------------------
 		// 1. Bintang kecil — distribusi mengikuti kode awal
 		// --------------------------------------------------
-		const starCount = 200;
+		const starCount = 150;
 		const positions = new Float32Array(starCount * 3);
 		const colors = new Float32Array(starCount * 3);
 
@@ -129,14 +129,14 @@
 
 		createSparkle(-14, 7, -31, 0.3);
 		createSparkle(-11, 13, -35, 0.25);
-		createSparkle(-2, 10, -33, 0.28);
-		createSparkle(9, 15, -36, 0.32);
-		createSparkle(19, 5, -30, 0.25);
-		createSparkle(27, 13, -34, 0.3);
-		createSparkle(-25, 16, -35, 0.32);
-		createSparkle(2, 5, -29, 0.22);
-		createSparkle(12, 10, -32, 0.24);
-		createSparkle(-17, 4, -30, 0.2);
+		// createSparkle(-2, 10, -33, 0.28);
+		// createSparkle(9, 15, -36, 0.32);
+		// createSparkle(19, 5, -30, 0.25);
+		// createSparkle(27, 13, -34, 0.3);
+		// createSparkle(-25, 16, -35, 0.32);
+		// createSparkle(2, 5, -29, 0.22);
+		// createSparkle(12, 10, -32, 0.24);
+		// createSparkle(-17, 4, -30, 0.2);
 
 		// Sisi kiri langit
 		createSparkle(-34, 17, -34, 0.3);

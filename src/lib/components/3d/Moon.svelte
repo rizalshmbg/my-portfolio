@@ -56,6 +56,12 @@
 		moon.scale.set(1, 1, 1);
 		moonGroup.add(moon);
 
+		// Cahaya bulan yang menerangi lingkungan sekitar.
+		const moonLight = new THREE.PointLight('#ffe6b5', 100, 65, 2);
+		moonLight.position.set(-1, 0, 0);
+		moonLight.castShadow = false;
+		moonGroup.add(moonLight);
+
 		// Cahaya halo di sekitar bulan
 		const glowCanvas = document.createElement('canvas');
 		glowCanvas.width = 256;

@@ -57,7 +57,7 @@
 		moonGroup.add(moon);
 
 		// Cahaya bulan yang menerangi lingkungan sekitar.
-		const moonLight = new THREE.PointLight('#ffe6b5', 100, 65, 2);
+		const moonLight = new THREE.PointLight('#ffe6b5', 8, 35, 2);
 		moonLight.position.set(-1, 0, 0);
 		moonLight.castShadow = false;
 		moonGroup.add(moonLight);

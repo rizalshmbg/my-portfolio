@@ -242,10 +242,12 @@
 		riverGeometry.setIndex(riverIndices);
 		riverGeometry.computeVertexNormals();
 
-		const waterMaterial = new THREE.MeshStandardMaterial({
+		const waterMaterial = new THREE.MeshPhysicalMaterial({
 			color: '#31596a',
 			roughness: 0.28,
 			metalness: 0.08,
+			specularIntensity: 0.12,
+			specularColor: new THREE.Color('#8ca0a8'),
 			emissive: '#07151b',
 			emissiveIntensity: 0.15,
 			side: THREE.DoubleSide

@@ -194,6 +194,7 @@
 		// ================================================
 
 		const riverSegments = 240;
+		const riverWidthSegments = 24;
 		const halfWidth = 3.8;
 
 		const riverVertices: number[] = [];
@@ -202,36 +203,47 @@
 		for (let i = 0; i <= riverSegments; i++) {
 			const t = i / riverSegments;
 
-			// Membentang dari belakang sampai foreground.
 			const localZ = THREE.MathUtils.lerp(-TERRAIN.depth / 2 + 0.5, TERRAIN.depth / 2 - 0.5, t);
 
 			const nz = localZ / (TERRAIN.depth / 2);
 			const centerNX = riverCenterNX(nz);
 			const centerLocalX = centerNX * (TERRAIN.width / 2);
 
-			// Ketinggian air ditentukan dari dasar cekungan
-			// di tengah jalur, bukan dari kedua tepi sungai.
-			const waterY = TERRAIN.centerY + terrainHeight(centerLocalX, localZ) + 0.055;
+			const baseY = TERRAIN.centerY + terrainHeight(centerLocalX, localZ) + 0.055;
 
 			const widthVariation = 0.88 + 0.18 * Math.sin(nz * 3.2) + 0.06 * Math.sin(nz * 6.0);
 
-			const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0.0, 0.12);
+			const endFade = THREE.MathUtils.smoothstep(Math.min(t, 1 - t), 0, 0.12);
 
 			const riverWidth = halfWidth * widthVariation * endFade;
 
-			for (const side of [-1, 1]) {
+			for (let j = 0; j <= riverWidthSegments; j++) {
+				const u = j / riverWidthSegments;
+				const side = u * 2 - 1;
+
 				const localX = centerLocalX + side * riverWidth;
 
+				// Riak kecil dengan pola yang tidak terlalu seragam.
+				const ripple =
+					Math.sin(localX * 2.8 + localZ * 1.7) * 0.003 +
+					Math.sin(localX * 5.1 - localZ * 2.4) * 0.0015 +
+					Math.sin(localZ * 0.9 + localX * 1.3) * 0.002;
+
+				// Riak melemah di tepi sungai.
+				const edgeFade = Math.sin(Math.PI * u);
+
+				const waterY = baseY + ripple * edgeFade;
+
 				riverVertices.push(TERRAIN.centerX + localX, waterY, TERRAIN.centerZ + localZ);
-			}
 
-			if (i < riverSegments) {
-				const a = i * 2;
-				const b = a + 1;
-				const c = a + 2;
-				const d = a + 3;
+				if (i < riverSegments && j < riverWidthSegments) {
+					const a = i * (riverWidthSegments + 1) + j;
+					const b = a + 1;
+					const c = a + riverWidthSegments + 1;
+					const d = c + 1;
 
-				riverIndices.push(a, c, b, b, c, d);
+					riverIndices.push(a, c, b, b, c, d);
+				}
 			}
 		}
 

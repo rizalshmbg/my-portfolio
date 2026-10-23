@@ -103,7 +103,7 @@
 		moonGroup.add(glow);
 
 		// Posisi bulan di langit
-		moonGroup.position.set(10, 7, -20);
+		moonGroup.position.set(-7, 20, -50);
 
 		scene.add(moonGroup);
 

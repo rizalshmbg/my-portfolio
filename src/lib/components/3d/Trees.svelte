@@ -61,7 +61,7 @@
 			const height = config.height;
 
 			const barkMaterial = new THREE.MeshStandardMaterial({
-				color: '#343943',
+				color: '#41332B',
 				roughness: 1,
 				metalness: 0
 			});

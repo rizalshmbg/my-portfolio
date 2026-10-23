@@ -129,8 +129,8 @@
 
 		createSparkle(-14, 7, -31, 0.3);
 		createSparkle(-11, 13, -35, 0.25);
-		// createSparkle(-2, 10, -33, 0.28);
-		// createSparkle(9, 15, -36, 0.32);
+		createSparkle(-2, 10, -33, 0.28);
+		createSparkle(9, 15, -36, 0.32);
 		// createSparkle(19, 5, -30, 0.25);
 		// createSparkle(27, 13, -34, 0.3);
 		// createSparkle(-25, 16, -35, 0.32);

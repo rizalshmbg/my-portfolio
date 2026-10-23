@@ -92,7 +92,7 @@
 
 		// Arah hadap model.
 		// Jika model tidak menghadap kanan, sesuaikan nilai ini.
-		const MODEL_ROTATION_Y = -Math.PI / 1.3;
+		const MODEL_ROTATION_Y = -Math.PI / 3;
 
 		// Posisi kawanan di sisi kiri.
 		// Tidak berubah selama animasi berjalan.

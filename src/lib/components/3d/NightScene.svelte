@@ -60,21 +60,21 @@
 		const ambientLight = new THREE.AmbientLight('#8791a3', 0.55);
 		scene.add(ambientLight);
 
-		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 2);
+		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 0.8);
 
-		directionalLight.position.set(10, 7, -20);
-		directionalLight.target.position.set(0, 0, 0);
+		directionalLight.position.set(-8, 20, -50);
+		directionalLight.target.position.set(0, 0, -10);
 
 		directionalLight.castShadow = true;
 
 		directionalLight.shadow.mapSize.set(2048, 2048);
 		directionalLight.shadow.camera.near = 0.5;
-		directionalLight.shadow.camera.far = 50;
+		directionalLight.shadow.camera.far = 100;
 
-		directionalLight.shadow.camera.left = -30;
-		directionalLight.shadow.camera.right = 30;
-		directionalLight.shadow.camera.top = 30;
-		directionalLight.shadow.camera.bottom = -30;
+		directionalLight.shadow.camera.left = -35;
+		directionalLight.shadow.camera.right = 35;
+		directionalLight.shadow.camera.top = 35;
+		directionalLight.shadow.camera.bottom = -35;
 
 		directionalLight.shadow.bias = -0.0001;
 		directionalLight.shadow.normalBias = 0.04;

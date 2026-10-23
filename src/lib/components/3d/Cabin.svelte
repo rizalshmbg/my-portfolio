@@ -86,8 +86,9 @@
 				// Atur posisi dan skala kabin.
 				const scale = 0.4;
 				cabin.scale.setScalar(scale);
+				cabin.rotation.y = 0.3;
 
-				const target = new THREE.Vector3(-17, 2, -25);
+				const target = new THREE.Vector3(-18, 1.9, -25);
 
 				// Tempatkan pusat model di lokasi target.
 				cabin.position.set(
@@ -99,7 +100,7 @@
 				scene.add(cabin);
 
 				// Cahaya hangat di sekitar kabin.
-				cabinLight = new THREE.PointLight('#ffb45c', 20, 10, 1);
+				cabinLight = new THREE.PointLight('#ffb45c', 30, 10, 1);
 				cabinLight.position.set(-16, 2.8, -24);
 				cabinLight.castShadow = false;
 

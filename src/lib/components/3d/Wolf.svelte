@@ -25,28 +25,28 @@
 
 		const pawShape = new THREE.Shape();
 
-		// Mulai dari sisi kiri bantalan telapak.
-		pawShape.moveTo(-0.13, 0.1);
+		// Mulai dari sisi kiri bantalan.
+		pawShape.moveTo(-0.13, 0.08);
 
-		// Sisi kiri telapak dan jari pertama.
-		pawShape.bezierCurveTo(-0.18, 0.04, -0.17, -0.02, -0.14, -0.06);
-		pawShape.bezierCurveTo(-0.12, -0.09, -0.1, -0.08, -0.09, -0.04);
+		// Jari paling kiri.
+		pawShape.bezierCurveTo(-0.18, 0.04, -0.17, -0.04, -0.14, -0.08);
+		pawShape.bezierCurveTo(-0.11, -0.11, -0.085, -0.06, -0.08, -0.025);
 
 		// Jari kedua.
-		pawShape.bezierCurveTo(-0.08, -0.01, -0.09, -0.11, -0.045, -0.15);
-		pawShape.bezierCurveTo(-0.015, -0.17, 0.005, -0.12, 0.005, -0.07);
+		pawShape.bezierCurveTo(-0.075, 0.005, -0.09, -0.12, -0.045, -0.16);
+		pawShape.bezierCurveTo(-0.015, -0.18, 0.005, -0.12, 0.005, -0.075);
 
 		// Jari ketiga.
-		pawShape.bezierCurveTo(0.015, -0.02, 0.025, -0.15, 0.065, -0.15);
-		pawShape.bezierCurveTo(0.1, -0.14, 0.1, -0.08, 0.085, -0.04);
+		pawShape.bezierCurveTo(0.015, -0.025, 0.025, -0.15, 0.065, -0.15);
+		pawShape.bezierCurveTo(0.1, -0.14, 0.1, -0.08, 0.085, -0.025);
 
-		// Jari keempat dan sisi kanan telapak.
-		pawShape.bezierCurveTo(0.12, -0.01, 0.13, -0.06, 0.16, -0.04);
-		pawShape.bezierCurveTo(0.19, -0.02, 0.18, 0.04, 0.14, 0.1);
+		// Jari paling kanan.
+		pawShape.bezierCurveTo(0.1, 0.005, 0.12, -0.08, 0.15, -0.055);
+		pawShape.bezierCurveTo(0.19, -0.02, 0.17, 0.045, 0.13, 0.08);
 
-		// Bantalan bawah telapak.
-		pawShape.bezierCurveTo(0.12, 0.17, 0.07, 0.2, 0, 0.2);
-		pawShape.bezierCurveTo(-0.07, 0.2, -0.12, 0.17, -0.13, 0.1);
+		// Bantalan utama.
+		pawShape.bezierCurveTo(0.12, 0.15, 0.07, 0.19, 0, 0.19);
+		pawShape.bezierCurveTo(-0.07, 0.19, -0.12, 0.15, -0.13, 0.08);
 
 		const pawGeometry = new THREE.ShapeGeometry(pawShape, 8);
 		pawGeometry.rotateX(Math.PI / 2);

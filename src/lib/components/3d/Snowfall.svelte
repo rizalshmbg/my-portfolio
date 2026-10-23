@@ -10,7 +10,7 @@
 	let { scene, registerUpdate }: Props = $props();
 
 	onMount(() => {
-		const COUNT = 200;
+		const COUNT = 100;
 
 		const positions = new Float32Array(COUNT * 3);
 		const fallSpeeds = new Float32Array(COUNT);
@@ -21,7 +21,7 @@
 			x: 32,
 			yMin: -1,
 			yMax: 20,
-			zMin: -40,
+			zMin: -30,
 			zMax: 8
 		};
 

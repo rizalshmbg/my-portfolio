@@ -17,7 +17,7 @@
 		// --------------------------------------------------
 		// 1. Bintang kecil — distribusi mengikuti kode awal
 		// --------------------------------------------------
-		const starCount = 300;
+		const starCount = 200;
 		const positions = new Float32Array(starCount * 3);
 		const colors = new Float32Array(starCount * 3);
 

@@ -243,13 +243,13 @@
 		riverGeometry.computeVertexNormals();
 
 		const waterMaterial = new THREE.MeshPhysicalMaterial({
-			color: '#31596a',
-			roughness: 0.28,
-			metalness: 0.08,
-			specularIntensity: 0.12,
-			specularColor: new THREE.Color('#8ca0a8'),
+			color: '#294957',
+			roughness: 0.42,
+			metalness: 0.02,
+			specularIntensity: 0.08,
+			specularColor: new THREE.Color('#8297a5'),
 			emissive: '#07151b',
-			emissiveIntensity: 0.15,
+			emissiveIntensity: 0.12,
 			side: THREE.DoubleSide
 		});
 
@@ -269,7 +269,7 @@
 		const reflectionGroup = new THREE.Group();
 		reflectionGroup.name = 'MoonlightRiverReflection';
 
-		const reflectionCount = 300;
+		const reflectionCount = 220;
 
 		for (let i = 0; i < reflectionCount; i++) {
 			// Konsentrasikan pantulan pada bagian tengah hingga foreground.
@@ -305,7 +305,7 @@
 				? THREE.MathUtils.randFloat(0.16, 0.34)
 				: THREE.MathUtils.randFloat(0.07, 0.18);
 
-			const streakLength = THREE.MathUtils.randFloat(0.012, 0.026);
+			const streakLength = THREE.MathUtils.randFloat(0.018, 0.045);
 
 			const geometry = new THREE.PlaneGeometry(streakWidth, streakLength);
 

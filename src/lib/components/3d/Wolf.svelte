@@ -19,8 +19,21 @@
 
 		const wolfGroups: THREE.Group[] = [];
 		const mixers: THREE.AnimationMixer[] = [];
+		const pawPrintGroups: THREE.Group[] = [];
 		const sourceGeometries: THREE.BufferGeometry[] = [];
 		const sourceMaterials: THREE.Material[] = [];
+
+		const pawGeometry = new THREE.CircleGeometry(1, 8);
+		pawGeometry.rotateX(-Math.PI / 2);
+
+		const pawMaterial = new THREE.MeshBasicMaterial({
+			color: '#35445b',
+			transparent: true,
+			opacity: 0.95,
+			depthWrite: false,
+			side: THREE.DoubleSide,
+			toneMapped: false
+		});
 
 		// =========================================
 		// KONFIGURASI KAWANAN
@@ -90,6 +103,44 @@
 			);
 		}
 
+		function createPawPrint(x: number, z: number) {
+			const paw = new THREE.Group();
+
+			// Telapak utama.
+			const pad = new THREE.Mesh(pawGeometry, pawMaterial);
+			pad.scale.set(0.15, 1, 0.17);
+			pad.position.set(0, 0, 0);
+			paw.add(pad);
+
+			// Empat jari mengarah ke depan (+Z).
+			const toes = [
+				{ x: -0.1, z: 0.12, size: 0.06 },
+				{ x: -0.035, z: 0.17, size: 0.06 },
+				{ x: 0.035, z: 0.17, size: 0.06 },
+				{ x: 0.1, z: 0.12, size: 0.06 }
+			];
+
+			for (const toe of toes) {
+				const mesh = new THREE.Mesh(pawGeometry, pawMaterial);
+
+				mesh.scale.set(toe.size, 1, toe.size * 1.1);
+				mesh.position.set(toe.x, 0.002, toe.z);
+
+				paw.add(mesh);
+			}
+
+			// Sesuaikan posisi vertikal dengan kontur salju.
+			const localX = x - TERRAIN.centerX;
+			const localZ = z - TERRAIN.centerZ;
+
+			const groundY = TERRAIN.centerY + terrainHeight(localX, localZ);
+
+			paw.position.set(x, groundY + 0.025, z);
+
+			scene.add(paw);
+			pawPrintGroups.push(paw);
+		}
+
 		// Arah hadap model.
 		// Jika model tidak menghadap kanan, sesuaikan nilai ini.
 		const MODEL_ROTATION_Y = -Math.PI / 3;
@@ -97,11 +148,11 @@
 		// Posisi kawanan di sisi kiri.
 		// Tidak berubah selama animasi berjalan.
 		const WOLF_POSITIONS = [
-			{ x: 4.8, z: -22.6 },
-			{ x: 6.5, z: -20.6 },
-			{ x: 9.5, z: -21.4 },
-			{ x: 8.0, z: -20.2 },
-			{ x: 11.0, z: -20.8 }
+			{ x: 2.8, z: -22.6 },
+			{ x: 4.2, z: -20.6 },
+			{ x: 5.7, z: -21.4 },
+			{ x: 7.2, z: -20.2 },
+			{ x: 9.0, z: -20.8 }
 		];
 
 		// Sedikit perbedaan fase agar tidak serempak.
@@ -214,6 +265,43 @@
 						material.color.set('#454545');
 						material.roughness = 1;
 						material.metalness = 0;
+					}
+				}
+
+				// =========================================
+				// JEJAK KAKI SERIGALA
+				// =========================================
+
+				for (let i = 0; i < WOLF_COUNT; i++) {
+					const { x, z } = WOLF_POSITIONS[i];
+
+					const steps = 28;
+
+					// Lebar pemisah antarlajur serigala.
+					const trackOffset = (i - 2) * 0.18;
+
+					// Posisi ujung jejak di dekat serigala.
+					const endZ = z + 0.5;
+
+					// Posisi awal jejak di foreground.
+					// Angka lebih besar berarti lebih dekat ke kamera.
+					const startZ = 0;
+
+					for (let step = 0; step < steps; step++) {
+						const t = step / (steps - 1);
+
+						// Jejak berjalan dari foreground menuju serigala.
+						const printZ = THREE.MathUtils.lerp(startZ, endZ, t);
+
+						// Lengkungan kecil agar jalurnya tidak terlalu lurus.
+						const curve = Math.sin(t * Math.PI * 2.5 + i * 0.7) * 0.25;
+
+						const printX = x + trackOffset + curve;
+
+						// Jejak kaki kiri dan kanan bergantian.
+						const side = step % 2 === 0 ? -1 : 1;
+
+						createPawPrint(printX + side * 0.12, printZ);
 					}
 				}
 
@@ -346,6 +434,15 @@
 			for (const group of wolfGroups) {
 				scene.remove(group);
 			}
+
+			for (const paw of pawPrintGroups) {
+				scene.remove(paw);
+			}
+
+			pawGeometry.dispose();
+			pawMaterial.dispose();
+
+			pawPrintGroups.length = 0;
 
 			sourceGeometries.forEach((geometry) => geometry.dispose());
 			sourceMaterials.forEach((material) => material.dispose());

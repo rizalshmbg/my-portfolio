@@ -121,7 +121,7 @@
 
 		// Posisi aksen bintang terang, tersebar seperti desain.
 		createSparkle(-20, 12, -30, 0.38);
-		createSparkle(-7, 15, -32, 0.48);
+		// createSparkle(-7, 15, -32, 0.48);
 		createSparkle(5, 8, -30, 0.32);
 		createSparkle(15, 13, -34, 0.42);
 		createSparkle(-28, 5, -29, 0.28);

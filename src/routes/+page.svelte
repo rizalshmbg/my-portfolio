@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>3D Night Scene</title>
+	<title>Portfolio - Rizal Sihombing</title>
 </svelte:head>
 
 <main>

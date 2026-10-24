@@ -14,6 +14,7 @@
 	let activeSection = $state('home');
 	let cameraProgress = $state(0);
 
+	let lenis: Lenis | undefined;
 	let viewport: HTMLElement;
 
 	function toggleTheme() {
@@ -21,10 +22,16 @@
 	}
 
 	function goToSection(id: string) {
-		viewport?.querySelector<HTMLElement>(`#${id}`)?.scrollIntoView({
-			behavior: 'smooth',
-			block: 'nearest',
-			inline: 'start'
+		const target = viewport?.querySelector<HTMLElement>(`#${id}`);
+
+		if (!target || !lenis || !viewport) return;
+
+		lenis.scrollTo(target, {
+			offset: 0,
+			duration: 2.5,
+			easing: (t: number) => {
+				return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+			}
 		});
 	}
 
@@ -36,7 +43,7 @@
 
 		if (!track) return;
 
-		const lenis = new Lenis({
+		lenis = new Lenis({
 			wrapper: viewport,
 			content: track,
 			orientation: 'horizontal',
@@ -50,7 +57,7 @@
 		let animationFrame = 0;
 
 		function raf(time: number) {
-			lenis.raf(time);
+			lenis?.raf(time);
 			animationFrame = requestAnimationFrame(raf);
 		}
 
@@ -81,7 +88,7 @@
 
 		return () => {
 			cancelAnimationFrame(animationFrame);
-			lenis.destroy();
+			lenis?.destroy();
 			observer.disconnect();
 		};
 	});

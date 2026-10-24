@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NightScene from '#lib/components/3d/winter/NightScene.svelte';
+	import WinterNight from '#lib/components/3d/winter/WinterNight.svelte';
 </script>
 
 <svelte:head>
@@ -7,7 +7,7 @@
 </svelte:head>
 
 <main>
-	<NightScene />
+	<WinterNight />
 </main>
 
 <style lang="scss">

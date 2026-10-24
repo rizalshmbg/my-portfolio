@@ -107,7 +107,7 @@
 			mouse.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
 		}
 
-		currentCanvas.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('mousemove', handleMouseMove);
 
 		function animate() {
 			animationFrame = requestAnimationFrame(animate);
@@ -158,7 +158,7 @@
 		return () => {
 			cancelAnimationFrame(animationFrame);
 			window.removeEventListener('resize', resize);
-			currentCanvas.removeEventListener('mousemove', handleMouseMove);
+			window.removeEventListener('mousemove', handleMouseMove);
 			currentScene.remove(snowFillLight);
 			snowFillLight.dispose();
 

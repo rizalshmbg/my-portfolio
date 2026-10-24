@@ -76,7 +76,7 @@
 			// Home → About: mendekati kabin dengan framing lebih lebar
 			.to(cameraState, {
 				x: -12,
-				y: 5,
+				y: 2,
 				z: -12,
 				targetX: -18,
 				targetY: 3,
@@ -87,7 +87,7 @@
 			// About → Experience: mendekati kawanan serigala
 			.to(cameraState, {
 				x: 6,
-				y: 5,
+				y: 2,
 				z: -13,
 				targetX: 6,
 				targetY: 1,

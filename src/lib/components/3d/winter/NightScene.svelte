@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import Moon from './Moon.svelte';
-	import Stars from './Stars.svelte';
-	import Clouds from './Clouds.svelte';
-	import Hills from './Hills.svelte';
-	import MountainFog from './MountainFog.svelte';
-	import Cabin from './Cabin.svelte';
-	import CabinPath from './CabinPath.svelte';
-	import SnowTerrain from './SnowTerrain.svelte';
-	import SnowRocks from './SnowRocks.svelte';
-	import WinterGrass from './WinterGrass.svelte';
-	import Trees from './Trees.svelte';
-	import Wolf from './Wolf.svelte';
-	import Snowfall from './Snowfall.svelte';
+	import Moon from './night-scene/Moon.svelte';
+	import Stars from './night-scene/Stars.svelte';
+	import Clouds from './night-scene/Clouds.svelte';
+	import Hills from './night-scene/Hills.svelte';
+	import MountainFog from './night-scene/MountainFog.svelte';
+	import Cabin from './night-scene/Cabin.svelte';
+	import CabinPath from './night-scene/CabinPath.svelte';
+	import SnowTerrain from './night-scene/SnowTerrain.svelte';
+	import SnowRocks from './night-scene/SnowRocks.svelte';
+	import WinterGrass from './night-scene/WinterGrass.svelte';
+	import Trees from './night-scene/Trees.svelte';
+	import Wolf from './night-scene/Wolf.svelte';
+	import Snowfall from './night-scene/Snowfall.svelte';
 
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);

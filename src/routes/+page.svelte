@@ -46,7 +46,24 @@
 			observer.observe(section);
 		});
 
-		return () => observer.disconnect();
+		function handleWheel(event: WheelEvent) {
+			if (event.ctrlKey || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				return;
+			}
+
+			// Jika gerakan dominan vertikal, ubah menjadi scroll horizontal.
+			if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
+				event.preventDefault();
+				viewport.scrollLeft += event.deltaY;
+			}
+		}
+
+		viewport.addEventListener('wheel', handleWheel, { passive: false });
+
+		return () => {
+			observer.disconnect();
+			viewport.removeEventListener('wheel', handleWheel);
+		};
 	});
 </script>
 

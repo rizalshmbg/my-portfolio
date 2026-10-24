@@ -50,7 +50,7 @@
 		}
 
 		loader.load(
-			'/models/cabin-winter.glb',
+			'/models/cabin-winter2.glb',
 			(gltf) => {
 				if (disposed) {
 					disposeModel(gltf.scene);
@@ -88,7 +88,7 @@
 				cabin.scale.setScalar(scale);
 				cabin.rotation.y = 0.3;
 
-				const target = new THREE.Vector3(-18, 1.9, -25);
+				const target = new THREE.Vector3(-19, 2, -25);
 
 				// Tempatkan pusat model di lokasi target.
 				cabin.position.set(
@@ -101,7 +101,7 @@
 
 				// Cahaya hangat di sekitar kabin.
 				cabinLight = new THREE.PointLight('#ffb45c', 30, 10, 1);
-				cabinLight.position.set(-16, 2.8, -24);
+				cabinLight.position.set(-16, 2, -24);
 				cabinLight.castShadow = false;
 
 				scene.add(cabinLight);

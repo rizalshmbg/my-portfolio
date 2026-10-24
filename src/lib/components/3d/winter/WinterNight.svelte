@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
+	import { gsap } from 'gsap';
+
 	import Moon from './night-scene/Moon.svelte';
 	import Stars from './night-scene/Stars.svelte';
 	import Clouds from './night-scene/Clouds.svelte';
@@ -15,13 +17,24 @@
 	import Wolf from './night-scene/Wolf.svelte';
 	import Snowfall from './night-scene/Snowfall.svelte';
 
+	interface Props {
+		progress: number;
+	}
+
+	let { progress }: Props = $props();
+
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
+	let setCameraProgress = $state<((value: number) => void) | undefined>(undefined);
 
 	let updateStars: ((time: number) => void) | undefined;
 	let updateClouds: ((time: number) => void) | undefined;
 	let updateWolf: ((time: number) => void) | undefined;
 	let updateSnowfall: ((time: number) => void) | undefined;
+
+	$effect(() => {
+		setCameraProgress?.(progress);
+	});
 
 	onMount(() => {
 		if (!canvas) return;
@@ -39,11 +52,70 @@
 			100
 		);
 
-		camera.position.set(0, 2, 8);
-		camera.lookAt(0, 4, -10);
-
-		const cameraBasePosition = camera.position.clone();
+		const cameraBasePosition = new THREE.Vector3(0, 2, 8);
 		const cameraBaseTarget = new THREE.Vector3(0, 4, -10);
+
+		const cameraState = {
+			x: cameraBasePosition.x,
+			y: cameraBasePosition.y,
+			z: cameraBasePosition.z,
+			targetX: cameraBaseTarget.x,
+			targetY: cameraBaseTarget.y,
+			targetZ: cameraBaseTarget.z
+		};
+
+		const cameraTimeline = gsap.timeline({
+			paused: true,
+			onUpdate: () => {
+				cameraBasePosition.set(cameraState.x, cameraState.y, cameraState.z);
+				cameraBaseTarget.set(cameraState.targetX, cameraState.targetY, cameraState.targetZ);
+			}
+		});
+
+		cameraTimeline
+			// Home → About: mendekati kabin dengan framing lebih lebar
+			.to(cameraState, {
+				x: -12,
+				y: 5,
+				z: -12,
+				targetX: -18,
+				targetY: 3,
+				targetZ: -25,
+				duration: 1,
+				ease: 'none'
+			})
+			// About → Experience: mendekati kawanan serigala
+			.to(cameraState, {
+				x: 6,
+				y: 5,
+				z: -13,
+				targetX: 6,
+				targetY: 1,
+				targetZ: -21,
+				duration: 1,
+				ease: 'none'
+			})
+			// Experience → Contact: mengarah ke bulan dengan framing lebih lebar
+			.to(cameraState, {
+				x: -7,
+				y: 16,
+				z: -29,
+				targetX: -7,
+				targetY: 20,
+				targetZ: -50,
+				duration: 1,
+				ease: 'none'
+			});
+
+		setCameraProgress = (value: number) => {
+			const normalizedProgress = THREE.MathUtils.clamp(value, 0, 1);
+			cameraTimeline.progress(normalizedProgress);
+		};
+
+		setCameraProgress(progress);
+
+		camera.position.copy(cameraBasePosition);
+		camera.lookAt(cameraBaseTarget);
 
 		const mouse = new THREE.Vector2(0, 0);
 		const smoothMouse = new THREE.Vector2(0, 0);
@@ -180,6 +252,8 @@
 			currentScene.remove(ambientLight);
 
 			renderer.dispose();
+			cameraTimeline.kill();
+			setCameraProgress = undefined;
 			scene = null;
 		};
 	});

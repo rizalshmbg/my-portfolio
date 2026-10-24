@@ -12,6 +12,7 @@
 
 	let theme = $state<'dark' | 'light'>('dark');
 	let activeSection = $state('home');
+	let cameraProgress = $state(0);
 
 	let viewport: HTMLElement;
 
@@ -30,6 +31,7 @@
 	onMount(() => {
 		if (!viewport) return;
 
+		// LENIS
 		const track = viewport.querySelector<HTMLElement>('.horizontal-track');
 
 		if (!track) return;
@@ -54,6 +56,11 @@
 
 		animationFrame = requestAnimationFrame(raf);
 
+		lenis.on('scroll', ({ scroll, limit }) => {
+			cameraProgress = limit > 0 ? scroll / limit : 0;
+		});
+
+		// OBSERVER
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -88,7 +95,7 @@
 <main class="portfolio relative h-dvh w-full overflow-hidden">
 	<div class="scene-background absolute inset-0">
 		{#if theme === 'dark'}
-			<WinterNight />
+			<WinterNight progress={cameraProgress} />
 		{:else}
 			<div class="winter-day-placeholder"></div>
 		{/if}

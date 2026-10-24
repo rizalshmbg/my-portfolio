@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Lenis from 'lenis';
+	import 'lenis/dist/lenis.css';
 
 	import WinterNight from '#lib/components/3d/winter/WinterNight.svelte';
 	import Navbar from '#lib/components/portfolio/Navbar.svelte';
@@ -28,6 +30,30 @@
 	onMount(() => {
 		if (!viewport) return;
 
+		const track = viewport.querySelector<HTMLElement>('.horizontal-track');
+
+		if (!track) return;
+
+		const lenis = new Lenis({
+			wrapper: viewport,
+			content: track,
+			orientation: 'horizontal',
+			gestureOrientation: 'both',
+			smoothWheel: true,
+			syncTouch: false,
+			lerp: 0.1,
+			wheelMultiplier: 1
+		});
+
+		let animationFrame = 0;
+
+		function raf(time: number) {
+			lenis.raf(time);
+			animationFrame = requestAnimationFrame(raf);
+		}
+
+		animationFrame = requestAnimationFrame(raf);
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
@@ -46,23 +72,10 @@
 			observer.observe(section);
 		});
 
-		function handleWheel(event: WheelEvent) {
-			if (event.ctrlKey || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-				return;
-			}
-
-			// Jika gerakan dominan vertikal, ubah menjadi scroll horizontal.
-			if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) {
-				event.preventDefault();
-				viewport.scrollLeft += event.deltaY;
-			}
-		}
-
-		viewport.addEventListener('wheel', handleWheel, { passive: false });
-
 		return () => {
+			cancelAnimationFrame(animationFrame);
+			lenis.destroy();
 			observer.disconnect();
-			viewport.removeEventListener('wheel', handleWheel);
 		};
 	});
 </script>
@@ -84,20 +97,22 @@
 	<Navbar {activeSection} onNavigate={goToSection} {theme} onToggleTheme={toggleTheme} />
 
 	<div bind:this={viewport} class="horizontal-viewport">
-		<div id="home" class="panel">
-			<Home />
-		</div>
+		<div class="horizontal-track">
+			<div id="home" class="panel">
+				<Home />
+			</div>
 
-		<div id="about" class="panel">
-			<About />
-		</div>
+			<div id="about" class="panel">
+				<About />
+			</div>
 
-		<div id="experience" class="panel">
-			<Experience />
-		</div>
+			<div id="experience" class="panel">
+				<Experience />
+			</div>
 
-		<div id="contact" class="panel">
-			<Contact />
+			<div id="contact" class="panel">
+				<Contact />
+			</div>
 		</div>
 	</div>
 </main>
@@ -121,29 +136,28 @@
 	.horizontal-viewport {
 		position: relative;
 		z-index: 1;
-		display: flex;
 		width: 100%;
 		height: 100%;
-		overflow-x: auto;
-		overflow-y: hidden;
-		scrollbar-width: none;
+		overflow: hidden;
 		overscroll-behavior: contain;
+	}
 
-		&::-webkit-scrollbar {
-			display: none;
-		}
+	.horizontal-track {
+		display: flex;
+		width: max-content;
+		height: 100%;
 	}
 
 	.panel {
 		position: relative;
 		display: flex;
-		flex: 0 0 100%;
-		width: 100%;
+		flex: 0 0 100vw;
+		width: 100vw;
 		height: 100%;
 		min-width: 0;
 		box-sizing: border-box;
 		align-items: center;
-		padding: 120px 13.3% 80px;
+		padding: 120px 4rem 80px;
 	}
 
 	@media (max-width: 700px) {

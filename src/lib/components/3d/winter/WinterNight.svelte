@@ -46,6 +46,7 @@
 		const cameraBaseTarget = new THREE.Vector3(0, 4, -10);
 
 		const mouse = new THREE.Vector2(0, 0);
+		const smoothMouse = new THREE.Vector2(0, 0);
 		const cameraTargetPosition = new THREE.Vector3();
 		const lookTarget = new THREE.Vector3();
 
@@ -103,8 +104,13 @@
 
 			if (!rect.width || !rect.height) return;
 
-			mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-			mouse.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+			const normalizedX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			const normalizedY = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+			mouse.set(
+				THREE.MathUtils.clamp(normalizedX, -1, 1),
+				THREE.MathUtils.clamp(normalizedY, -1, 1)
+			);
 		}
 
 		window.addEventListener('mousemove', handleMouseMove);
@@ -112,31 +118,38 @@
 		function animate() {
 			animationFrame = requestAnimationFrame(animate);
 
-			const time = clock.getElapsedTime();
+			const delta = clock.getDelta();
+			const time = clock.elapsedTime;
 
 			updateStars?.(time);
 			updateClouds?.(time);
 			updateWolf?.(time);
 			updateSnowfall?.(time * 1000);
 
-			// Batas gerakan kamera agar komposisi tetap terjaga.
+			// Smoothing berbasis waktu agar tidak bergantung pada FPS.
+			const smoothing = 1 - Math.exp(-5 * delta);
+
+			// Mouse bergerak menuju input terbaru secara bertahap.
+			smoothMouse.lerp(mouse, smoothing);
+
+			// Posisi dasar kamera + offset dari mouse.
 			cameraTargetPosition.set(
-				cameraBasePosition.x + mouse.x * 1.1,
-				cameraBasePosition.y + mouse.y * 0.65,
+				cameraBasePosition.x + smoothMouse.x * 1.1,
+				cameraBasePosition.y + smoothMouse.y * 0.65,
 				cameraBasePosition.z
 			);
 
+			// Arah pandang kamera juga mengikuti mouse secara halus.
 			lookTarget.set(
-				cameraBaseTarget.x + mouse.x * 0.6,
-				cameraBaseTarget.y + mouse.y * 0.4,
+				cameraBaseTarget.x + smoothMouse.x * 0.6,
+				cameraBaseTarget.y + smoothMouse.y * 0.4,
 				cameraBaseTarget.z
 			);
 
-			// Kamera mengikuti mouse dengan lebih responsif.
-			camera.position.lerp(cameraTargetPosition, 0.07);
+			camera.position.lerp(cameraTargetPosition, smoothing);
 			camera.lookAt(lookTarget);
 
-			renderer.render(currentScene!, camera);
+			renderer.render(currentScene, camera);
 		}
 
 		animate();

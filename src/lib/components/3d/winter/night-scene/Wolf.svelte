@@ -49,6 +49,7 @@
 		pawShape.bezierCurveTo(-0.07, 0.19, -0.12, 0.15, -0.13, 0.08);
 
 		const pawGeometry = new THREE.ShapeGeometry(pawShape, 8);
+		pawGeometry.scale(0.6, 0.6, 1);
 		pawGeometry.rotateX(Math.PI / 2);
 
 		const pawMaterial = new THREE.MeshBasicMaterial({
@@ -67,7 +68,7 @@
 		const WOLF_COUNT = 5;
 
 		// Tinggi target setiap serigala dalam unit Three.js.
-		const TARGET_HEIGHT = 0.8;
+		const TARGET_HEIGHT = 1.15;
 
 		const TERRAIN = {
 			centerX: 8,
@@ -144,7 +145,7 @@
 
 		// Arah hadap model.
 		// Jika model tidak menghadap kanan, sesuaikan nilai ini.
-		const MODEL_ROTATION_Y = -Math.PI / 3;
+		const MODEL_ROTATION_Y = -Math.PI / 2.3;
 
 		// Posisi kawanan di sisi kiri.
 		// Tidak berubah selama animasi berjalan.
@@ -273,36 +274,38 @@
 				// JEJAK KAKI SERIGALA
 				// =========================================
 
+				const STEP_SPACING = 0.65;
+				const PAW_OFFSET_X = 0.12;
+				const TRACK_OFFSET_X = 0.12;
+
 				for (let i = 0; i < WOLF_COUNT; i++) {
 					const { x, z } = WOLF_POSITIONS[i];
 
-					const steps = 28;
-
-					// Lebar pemisah antarlajur serigala.
-					const trackOffset = (i - 2) * 0.18;
-
-					// Posisi ujung jejak di dekat serigala.
-					const endZ = z + 0.5;
-
-					// Posisi awal jejak di foreground.
-					// Angka lebih besar berarti lebih dekat ke kamera.
 					const startZ = 0;
+					const endZ = z + 0.5;
+					const distance = Math.abs(startZ - endZ);
+
+					// Jumlah langkah disesuaikan dengan panjang jalur.
+					const steps = Math.max(2, Math.floor(distance / STEP_SPACING) + 1);
+
+					const trackOffset = (i - 2) * TRACK_OFFSET_X;
 
 					for (let step = 0; step < steps; step++) {
-						const t = step / (steps - 1);
+						const printZ = startZ - step * STEP_SPACING;
 
-						// Jejak berjalan dari foreground menuju serigala.
-						const printZ = THREE.MathUtils.lerp(startZ, endZ, t);
+						// Jangan melewati titik akhir jalur.
+						if (printZ < endZ) break;
 
-						// Lengkungan kecil agar jalurnya tidak terlalu lurus.
-						const curve = Math.sin(t * Math.PI * 2.5 + i * 0.7) * 0.25;
+						const t = step / Math.max(steps - 1, 1);
+
+						const curve = Math.sin(t * Math.PI) * Math.sin(t * Math.PI * 2) * 0.08;
 
 						const printX = x + trackOffset + curve;
 
-						// Jejak kaki kiri dan kanan bergantian.
+						// Posisi kiri dan kanan bergantian.
 						const side = step % 2 === 0 ? -1 : 1;
 
-						createPawPrint(printX + side * 0.12, printZ);
+						createPawPrint(printX + side * PAW_OFFSET_X, printZ);
 					}
 				}
 

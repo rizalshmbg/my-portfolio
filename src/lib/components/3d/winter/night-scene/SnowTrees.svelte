@@ -142,6 +142,13 @@
 			const tree = new THREE.Group();
 			const model = cloneSkeleton(source);
 
+			model.traverse((object) => {
+				if (!(object instanceof THREE.Mesh)) return;
+
+				object.castShadow = true;
+				object.receiveShadow = true;
+			});
+
 			model.updateMatrixWorld(true);
 
 			const originalBounds = new THREE.Box3().setFromObject(model);
@@ -191,7 +198,7 @@
 						name: 'TreeWithSnow',
 						source: treeWithSnowGLTF.scene,
 						positions: TREE_WITH_SNOW_POSITIONS
-					},
+					}
 				];
 
 				for (const modelConfig of models) {

@@ -26,12 +26,12 @@
 		// Warna batu dingin agar menyatu dengan malam.
 		const rockMaterials = [
 			new THREE.MeshStandardMaterial({
-				color: '#454a52',
+				color: '#555b64',
 				roughness: 1,
 				flatShading: true
 			}),
 			new THREE.MeshStandardMaterial({
-				color: '#565b63',
+				color: '#666c75',
 				roughness: 1,
 				flatShading: true
 			}),
@@ -45,7 +45,7 @@
 		materials.push(...rockMaterials);
 
 		// Geometri batu kecil tetap seperti sebelumnya.
-		const rockGeometry = new THREE.IcosahedronGeometry(1, 0);
+		const rockGeometry = new THREE.IcosahedronGeometry(1, 1);
 		geometries.push(rockGeometry);
 
 		// Geometri khusus batu besar: lebih halus dan sedikit tidak beraturan.
@@ -61,10 +61,10 @@
 
 		// Material salju digunakan bersama.
 		const snowMaterial = new THREE.MeshStandardMaterial({
-			color: '#d9dce2',
-			roughness: 1,
-			flatShading: true,
-			side: THREE.DoubleSide
+			color: '#e2e5eb',
+			roughness: 0.95,
+			metalness: 0,
+			flatShading: true
 		});
 
 		materials.push(snowMaterial);
@@ -155,54 +155,35 @@
 			const random = createRandom(seed);
 			const height = terrainHeight(localX, localZ);
 
-			const rock = new THREE.Mesh(
-				isLarge ? largeRockGeometry : rockGeometry,
-				rockMaterials[Math.floor(random() * rockMaterials.length)]
-			);
+			// Variasi ukuran setiap batu.
+			const sx = size * (isLarge ? range(random, 0.9, 1.15) : range(random, 0.9, 1.1));
 
-			// Lebar dan tinggi tidak sama agar bentuknya alami.
-			const sx = size * (isLarge ? range(random, 0.85, 1.1) : range(random, 0.9, 1.15));
-			const sy = size * (isLarge ? range(random, 0.95, 1.25) : range(random, 0.75, 1.05));
-			const sz = size * (isLarge ? range(random, 0.85, 1.1) : range(random, 0.9, 1.15));
+			const sy = size * (isLarge ? range(random, 0.85, 1.05) : range(random, 0.7, 0.9));
 
-			rock.scale.set(sx, sy, sz);
+			const sz = size * (isLarge ? range(random, 0.9, 1.15) : range(random, 0.9, 1.1));
 
-			// Sebagian batu tertanam di dalam permukaan salju.
-			rock.position.set(
+			const snowRock = new THREE.Mesh(isLarge ? largeRockGeometry : rockGeometry, snowMaterial);
+
+			snowRock.scale.set(sx, sy, sz);
+
+			// Tanam sebagian batu ke dalam permukaan salju.
+			snowRock.position.set(
 				TERRAIN.centerX + localX,
-				TERRAIN.centerY + height - sy * (isLarge ? 0.68 : 0.58),
+				TERRAIN.centerY + height - sy * 0.48,
 				TERRAIN.centerZ + localZ
 			);
 
-			rock.rotation.set(range(random, -0.15, 0.15), random() * Math.PI, range(random, -0.18, 0.18));
+			// Rotasi acak agar batu tidak terlihat seragam.
+			snowRock.rotation.set(
+				range(random, -0.12, 0.12),
+				random() * Math.PI,
+				range(random, -0.12, 0.12)
+			);
 
-			rock.castShadow = true;
-			rock.receiveShadow = true;
+			snowRock.castShadow = true;
+			snowRock.receiveShadow = true;
 
-			rockGroup.add(rock);
-
-			// Batu besar menggunakan kubah salju.
-			// Batu kecil tetap menggunakan bentuk salju sebelumnya.
-			const snowGeometry = isLarge ? largeSnowGeometry : smallSnowGeometry;
-
-			const snowCap = new THREE.Mesh(snowGeometry, snowMaterial);
-
-			if (isLarge) {
-				snowCap.scale.set(sx * 1.05, sy * 0.38, sz * 1.05);
-
-				snowCap.position.set(rock.position.x, rock.position.y + sy * 0.68, rock.position.z);
-			} else {
-				// Pertahankan salju batu kecil.
-				snowCap.scale.set(sx * 1.08, sy * 0.28, sz * 1.08);
-
-				snowCap.position.set(rock.position.x, rock.position.y + sy * 0.68, rock.position.z);
-			}
-
-			snowCap.rotation.copy(rock.rotation);
-			snowCap.castShadow = false;
-			snowCap.receiveShadow = true;
-
-			rockGroup.add(snowCap);
+			rockGroup.add(snowRock);
 		}
 
 		// ================================================

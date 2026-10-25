@@ -36,9 +36,9 @@
 
 		// Posisi dan ukuran kabut di belakang pegunungan.
 		const fogConfigs = [
-			{ x: -20, y: 1.5, z: -34, width: 24, height: 6 },
-			{ x: 5, y: 1.2, z: -36, width: 30, height: 7 },
-			{ x: 25, y: 1.8, z: -34, width: 22, height: 6 }
+			{ x: -20, y: 1.5, z: -44, width: 24, height: 6 },
+			{ x: 5, y: 1.2, z: -46, width: 30, height: 7 },
+			{ x: 25, y: 1.8, z: -44, width: 22, height: 6 }
 		];
 
 		for (const config of fogConfigs) {
@@ -47,7 +47,7 @@
 				transparent: true,
 				opacity: 0.35,
 				depthWrite: false,
-				depthTest: true,
+				depthTest: false,
 				toneMapped: true
 			});
 

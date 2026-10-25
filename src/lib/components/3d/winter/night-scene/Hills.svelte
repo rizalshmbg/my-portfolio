@@ -171,11 +171,11 @@
 			hillTextures.push(gradientTexture);
 		}
 
-		createHill(90, 12, '#596273', new THREE.Vector3(-60, 0, -48), 'rolling', 'diagonal');
-		createHill(30, 9, '#505b6d', new THREE.Vector3(-28, -0.5, -47), 'peak', 'horizontal');
-		createHill(35, 10, '#626d7e', new THREE.Vector3(0, 0, -46), 'ridge', 'vertical');
-		createHill(50, 5, '#596273', new THREE.Vector3(29, 0, -47), 'rolling', 'diagonal');
-		createHill(50, 7, '#626d7e', new THREE.Vector3(45, 0, -48), 'peak', 'vertical');
+		createHill(90, 12, '#343d4d', new THREE.Vector3(-60, 0, -48), 'rolling', 'diagonal');
+		createHill(30, 9, '#394353', new THREE.Vector3(-28, -0.5, -47), 'peak', 'horizontal');
+		createHill(35, 10, '#465165', new THREE.Vector3(0, 0, -46), 'ridge', 'vertical');
+		createHill(50, 5, '#394353', new THREE.Vector3(29, 0, -47), 'rolling', 'diagonal');
+		createHill(50, 7, '#3b4557', new THREE.Vector3(45, 0, -48), 'peak', 'vertical');
 
 		return () => {
 			for (const hill of hills) {

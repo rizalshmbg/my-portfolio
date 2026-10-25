@@ -46,7 +46,7 @@
 		}
 
 		loader.load(
-			'/models/cabin-winter.glb',
+			'/models/winter/cabin-winter.glb',
 			(gltf) => {
 				if (disposed) {
 					disposeModel(gltf.scene);

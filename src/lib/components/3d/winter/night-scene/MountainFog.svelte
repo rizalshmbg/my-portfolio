@@ -22,23 +22,39 @@
 
 		if (!context) return;
 
-		const gradient = context.createRadialGradient(128, 128, 5, 128, 128, 128);
+		const gradient = context.createLinearGradient(0, 0, 0, 256);
 
-		gradient.addColorStop(0, 'rgba(145, 164, 190, 0.18)');
-		gradient.addColorStop(0.4, 'rgba(120, 143, 174, 0.08)');
+		gradient.addColorStop(0, 'rgba(145, 164, 190, 0)');
+		gradient.addColorStop(0.25, 'rgba(145, 164, 190, 0.03)');
+		gradient.addColorStop(0.5, 'rgba(145, 164, 190, 0.12)');
+		gradient.addColorStop(0.75, 'rgba(120, 143, 174, 0.05)');
 		gradient.addColorStop(1, 'rgba(100, 125, 160, 0)');
 
 		context.fillStyle = gradient;
 		context.fillRect(0, 0, 256, 256);
+
+		// Mask horizontal untuk melembutkan ujung kabut.
+		const horizontalGradient = context.createLinearGradient(0, 0, 256, 0);
+
+		horizontalGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+		horizontalGradient.addColorStop(0.2, 'rgba(0, 0, 0, 0.65)');
+		horizontalGradient.addColorStop(0.5, 'rgba(0, 0, 0, 1)');
+		horizontalGradient.addColorStop(0.8, 'rgba(0, 0, 0, 0.65)');
+		horizontalGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+		context.globalCompositeOperation = 'destination-in';
+		context.fillStyle = horizontalGradient;
+		context.fillRect(0, 0, 256, 256);
+		context.globalCompositeOperation = 'source-over';
 
 		const texture = new THREE.CanvasTexture(canvas);
 		texture.colorSpace = THREE.SRGBColorSpace;
 
 		// Posisi dan ukuran kabut di belakang pegunungan.
 		const fogConfigs = [
-			{ x: -20, y: 1.5, z: -44, width: 24, height: 6 },
-			{ x: 5, y: 1.2, z: -46, width: 30, height: 7 },
-			{ x: 25, y: 1.8, z: -44, width: 22, height: 6 }
+			{ x: -20, y: 2, z: -44, width: 26, height: 4 },
+			{ x: 5, y: 1.5, z: -46, width: 32, height: 4.5 },
+			{ x: 25, y: 2, z: -44, width: 24, height: 4 }
 		];
 
 		for (const config of fogConfigs) {

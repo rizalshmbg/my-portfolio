@@ -15,6 +15,7 @@
 	import WinterGrass from './night-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
 	import Wolf from './night-scene/Wolf.svelte';
+	import SnowTrees from './night-scene/SnowTrees.svelte';
 	import Snowfall from './night-scene/Snowfall.svelte';
 
 	interface Props {
@@ -280,6 +281,7 @@
 				updateWolf = callback;
 			}}
 		/>
+		<SnowTrees {scene} />
 		<Snowfall {scene} registerUpdate={(callback) => (updateSnowfall = callback)} />
 	{/if}
 </div>

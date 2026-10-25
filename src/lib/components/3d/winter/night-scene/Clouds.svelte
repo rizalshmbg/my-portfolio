@@ -210,9 +210,9 @@
 		}
 
 		createCloud({
-			width: 12,
-			height: 7,
-			position: new THREE.Vector3(-45, 6.5, -42),
+			width: 15,
+			height: 8,
+			position: new THREE.Vector3(-45, 11, -49),
 			color: '#252b35',
 			opacity: 1,
 			seed: 20,
@@ -222,7 +222,7 @@
 		createCloud({
 			width: 13,
 			height: 8,
-			position: new THREE.Vector3(-28, 7.5, -42),
+			position: new THREE.Vector3(-28, 8, -49),
 			color: '#303744',
 			opacity: 0.82,
 			seed: 20,
@@ -232,7 +232,7 @@
 		createCloud({
 			width: 17,
 			height: 9,
-			position: new THREE.Vector3(-10, 6.5, -42),
+			position: new THREE.Vector3(-10, 6.5, -49),
 			color: '#292d33',
 			opacity: 1,
 			seed: 120,
@@ -243,7 +243,7 @@
 		createCloud({
 			width: 10,
 			height: 8,
-			position: new THREE.Vector3(9, 6, -42),
+			position: new THREE.Vector3(9, 7.5, -49),
 			color: '#41414a',
 			opacity: 0.62,
 			seed: 86,
@@ -253,9 +253,9 @@
 
 		// Kanan
 		createCloud({
-			width: 10,
-			height: 8,
-			position: new THREE.Vector3(22, 4, -42),
+			width: 15,
+			height: 10,
+			position: new THREE.Vector3(26, 7, -49),
 			color: '#292d35',
 			opacity: 1,
 			seed: 62,
@@ -265,17 +265,7 @@
 		createCloud({
 			width: 10,
 			height: 8,
-			position: new THREE.Vector3(33, 6, -42),
-			color: '#292f3a',
-			opacity:0.58,
-			seed: 62,
-			speed: 0.19,
-			direction: -1
-		});
-		createCloud({
-			width: 10,
-			height: 8,
-			position: new THREE.Vector3(45, 8, -42),
+			position: new THREE.Vector3(45, 8, -49),
 			color: '#343945',
 			opacity: 0.82,
 			seed: 62,

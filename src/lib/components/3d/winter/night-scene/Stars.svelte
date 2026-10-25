@@ -35,9 +35,16 @@
 		for (let i = 0; i < starCount; i++) {
 			const i3 = i * 3;
 
-			positions[i3] = (random() - 0.5) * 90;
+			if (i < 40) {
+				positions[i3] = -70 + random() * 45;
+			} else if (i < 110) {
+				positions[i3] = -25 + random() * 50;
+			} else {
+				positions[i3] = 25 + random() * 45;
+			}
+
 			positions[i3 + 1] = random() * 30 + 2;
-			positions[i3 + 2] = -38 - random() * 4;
+			positions[i3 + 2] = -50;
 
 			const color = random() > 0.65 ? warmWhite : coolWhite;
 
@@ -120,35 +127,31 @@
 		}
 
 		// Posisi aksen bintang terang, tersebar seperti desain.
-		createSparkle(-20, 12, -30, 0.38);
-		// createSparkle(-7, 15, -32, 0.48);
-		createSparkle(5, 8, -30, 0.32);
-		createSparkle(15, 13, -34, 0.42);
-		createSparkle(-28, 5, -29, 0.28);
-		createSparkle(23, 7, -31, 0.3);
+		createSparkle(-20, 16, -50, 0.38);
+		createSparkle(1, 12, -50, 0.32);
+		createSparkle(12, 22, -50, 0.42);
+		createSparkle(23, 8, -50, 0.28);
+		createSparkle(30, 20, -50, 0.3);
 
-		createSparkle(-14, 7, -31, 0.3);
-		createSparkle(-11, 13, -35, 0.25);
-		createSparkle(-2, 10, -33, 0.28);
-		createSparkle(9, 15, -36, 0.32);
-		// createSparkle(19, 5, -30, 0.25);
-		// createSparkle(27, 13, -34, 0.3);
-		// createSparkle(-25, 16, -35, 0.32);
-		// createSparkle(2, 5, -29, 0.22);
-		// createSparkle(12, 10, -32, 0.24);
-		// createSparkle(-17, 4, -30, 0.2);
+		createSparkle(-11, 13, -50, 0.35);
+		createSparkle(-2, 10, -50, 0.28);
+		createSparkle(9, 15, -50, 0.32);
+		createSparkle(27, 13, -50, 0.4);
+		createSparkle(12, 10, -50, 0.41);
 
-		// Sisi kiri langit
-		createSparkle(-34, 17, -34, 0.3);
-		createSparkle(-38, 12, -32, 0.24);
-		createSparkle(-32, 8, -35, 0.28);
-		createSparkle(-36, 4, -31, 0.22);
+		// // Sisi kiri langit
+		createSparkle(-40, 17, -50, 0.46);
+		createSparkle(-45, 12, -50, 0.29);
+		createSparkle(-30, 20, -50, 0.34);
+		createSparkle(-33, 12, -50, 0.32);
+		createSparkle(-33, 25, -50, 0.48);
 
 		// Sisi kanan langit
-		createSparkle(32, 16, -34, 0.3);
-		createSparkle(38, 12, -32, 0.24);
-		createSparkle(34, 8, -35, 0.28);
-		createSparkle(37, 4, -31, 0.22);
+		createSparkle(32, 16, -50, 0.3);
+		createSparkle(38, 12, -50, 0.32);
+		createSparkle(34, 8, -50, 0.28);
+		createSparkle(44, 20, -50, 0.28);
+		createSparkle(49, 20, -50, 0.48);
 
 		// --------------------------------------------------
 		// 3. Animasi twinkle

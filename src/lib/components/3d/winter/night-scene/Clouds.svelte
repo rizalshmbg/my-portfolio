@@ -188,7 +188,7 @@
 				opacity: layer.opacity,
 				side: THREE.DoubleSide,
 				depthTest: true,
-				depthWrite: true,
+				depthWrite: false,
 				alphaTest: 0.01,
 				toneMapped: false
 			});

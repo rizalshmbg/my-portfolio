@@ -11,11 +11,11 @@
 	const TERRAIN = {
 		centerX: 8,
 		centerY: -0.5,
-		centerZ: -18,
+		centerZ: -25,
 		width: 70,
-		depth: 38,
+		depth: 52,
 		segmentsX: 280,
-		segmentsZ: 180
+		segmentsZ: 240
 	} as const;
 
 	// Jalur sungai dalam koordinat lokal terrain.
@@ -111,10 +111,13 @@
 				for (let ix = 0; ix < columns; ix++) {
 					const u = ix / terrainSegments;
 
-					// Sisi kiri berakhir di tepi kiri sungai;
-					// sisi kanan dimulai di tepi kanan sungai.
+					// Perpanjang tepian salju kiri dan buat batasnya tidak lurus.
+					const leftEdgeVariation = 5 * Math.sin(nz * 2.2) + 3 * Math.sin(nz * 4.1 + 0.8);
+
+					const leftEdgeX = -TERRAIN.width / 2 - 45 + leftEdgeVariation;
+
 					const localX = isLeft
-						? THREE.MathUtils.lerp(-TERRAIN.width / 2, centerX - bankHalfWidth, u)
+						? THREE.MathUtils.lerp(leftEdgeX, centerX - bankHalfWidth, u)
 						: THREE.MathUtils.lerp(centerX + bankHalfWidth, TERRAIN.width / 2, u);
 
 					const height = terrainHeight(localX, localZ);
@@ -144,6 +147,15 @@
 					const snowTint = new THREE.Color(variation >= 0 ? '#e3e8f0' : '#8995a8');
 
 					color.lerp(snowTint, Math.abs(variation));
+
+					// Transisi warna pada tepian paling kiri agar menyatu
+					// dengan tanah gelap di belakangnya.
+					if (isLeft) {
+						const edgeFade = THREE.MathUtils.smoothstep(u, 0.0, 0.2);
+						const darkGround = new THREE.Color('#171b24');
+
+						color.lerp(darkGround, 1 - edgeFade);
+					}
 
 					colors.push(color.r, color.g, color.b);
 

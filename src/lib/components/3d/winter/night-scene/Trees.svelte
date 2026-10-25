@@ -23,11 +23,12 @@
 		const materials: THREE.Material[] = [];
 
 		const proceduralConfigs: ProceduralTreeConfig[] = [
-			{ x: -20, y: -1.5, z: -15, height: 20, seed: 33 },
+			{ x: -40, y: -1.5, z: -25, height: 12, seed: 33 },
+			{ x: -22, y: -1.5, z: -15, height: 15, seed: 33 },
 			{ x: -11, y: -2, z: -7, height: 10, seed: 11 },
-			{ x: 11, y: -1.5, z: -15, height: 5.3, seed: 44 },
+			{ x: 11, y: -1.5, z: -15, height: 9.3, seed: 44 },
 			{ x: 12, y: -1.5, z: -10, height: 15.4, seed: 55 },
-			{ x: 17, y: -1.5, z: -12, height: 13.6, seed: 66 }
+			{ x: 20, y: -1.5, z: -15, height: 11.6, seed: 66 }
 		];
 
 		function addBranch(

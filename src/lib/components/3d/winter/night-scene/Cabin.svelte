@@ -96,7 +96,7 @@
 				scene.add(cabin);
 
 				// Cahaya hangat di sekitar kabin.
-				cabinLight = new THREE.PointLight('#ffb45c', 30, 10, 1);
+				cabinLight = new THREE.PointLight('#ffb45c', 20, 10, 1);
 				cabinLight.position.set(-16, 2, -24);
 				cabinLight.castShadow = false;
 

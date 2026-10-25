@@ -11,11 +11,7 @@
 		let cabin: THREE.Group | null = null;
 		let cabinLight: THREE.PointLight | null = null;
 
-		// const dracoLoader = new DRACOLoader();
-		// dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
-
 		const loader = new GLTFLoader();
-		// loader.setDRACOLoader(dracoLoader);
 
 		function disposeModel(root: THREE.Object3D) {
 			const geometries: THREE.BufferGeometry[] = [];

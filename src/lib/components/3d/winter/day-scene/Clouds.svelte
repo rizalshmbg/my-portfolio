@@ -290,7 +290,7 @@
 		// Tengah.
 		createCloud({
 			width: 10,
-			height: 6,
+			height: 8,
 			position: new THREE.Vector3(9, 7.5, -49),
 			color: '#F8FBFF',
 			opacity: 0.82,

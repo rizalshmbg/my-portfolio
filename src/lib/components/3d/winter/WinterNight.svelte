@@ -139,7 +139,7 @@
 
 		const directionalLight = new THREE.DirectionalLight('#f5dfbd', 1);
 
-		directionalLight.position.set(-8, 20, -50);
+		directionalLight.position.set(-5, 20, -50);
 		directionalLight.target.position.set(0, 0, -10);
 
 		directionalLight.castShadow = true;

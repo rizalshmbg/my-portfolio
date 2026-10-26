@@ -12,10 +12,10 @@
 	import SnowTerrain from './day-scene/SnowTerrain.svelte';
 	import SnowRocks from './day-scene/SnowRocks.svelte';
 	import WinterGrass from './shared-scene/WinterGrass.svelte';
-	import Trees from './night-scene/Trees.svelte';
+	import Trees from './day-scene/Trees.svelte';
 	import Wolf from './day-scene/Wolf.svelte';
+	import SnowTrees from './day-scene/SnowTrees.svelte';
 
-	import SnowTrees from './night-scene/SnowTrees.svelte';
 
 	interface Props {
 		progress: number;
@@ -154,7 +154,7 @@
 
 		const sunlight = new THREE.DirectionalLight('#fff0c2', 3);
 
-		sunlight.position.set(-8, 20, -50);
+		sunlight.position.set(-5, 20, -50);
 		sunlight.target.position.set(0, 0, -10);
 
 		sunlight.castShadow = true;
@@ -297,10 +297,8 @@
 				updateWolf = callback;
 			}}
 		/>
-
-
-
 		<SnowTrees {scene} />
+
 	{/if}
 </div>
 

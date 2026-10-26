@@ -10,8 +10,8 @@
 	import Cabin from './day-scene/Cabin.svelte';
 	import CabinPath from './shared-scene/CabinPath.svelte';
 	import SnowTerrain from './day-scene/SnowTerrain.svelte';
+	import SnowRocks from './day-scene/SnowRocks.svelte';
 
-	import SnowRocks from './night-scene/SnowRocks.svelte';
 	import WinterGrass from './night-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
 	import Wolf from './night-scene/Wolf.svelte';
@@ -285,11 +285,11 @@
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />
 		<MountainFog {scene} />
-
 		<Cabin {scene} />
 		<CabinPath {scene} />
 		<SnowTerrain {scene} />
 		<SnowRocks {scene} />
+
 		<WinterGrass {scene} />
 		<Trees {scene} />
 

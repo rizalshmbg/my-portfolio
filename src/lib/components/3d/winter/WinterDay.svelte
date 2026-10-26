@@ -15,7 +15,7 @@
 	import Trees from './day-scene/Trees.svelte';
 	import Wolf from './day-scene/Wolf.svelte';
 	import SnowTrees from './day-scene/SnowTrees.svelte';
-
+	import Snowfall from './day-scene/Snowfall.svelte';
 
 	interface Props {
 		progress: number;
@@ -29,6 +29,7 @@
 
 	let updateClouds: ((time: number) => void) | undefined;
 	let updateWolf: ((time: number) => void) | undefined;
+	let updateSnowfall: ((time: number) => void) | undefined;
 
 	$effect(() => {
 		setCameraProgress?.(progress);
@@ -209,6 +210,7 @@
 
 			updateClouds?.(time);
 			updateWolf?.(time);
+			updateSnowfall?.(time * 1000);
 
 			// Smoothing agar parallax tidak bergantung pada FPS.
 			const smoothing = 1 - Math.exp(-5 * delta);
@@ -298,7 +300,7 @@
 			}}
 		/>
 		<SnowTrees {scene} />
-
+		<Snowfall {scene} registerUpdate={(callback) => (updateSnowfall = callback)} />
 	{/if}
 </div>
 

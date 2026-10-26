@@ -152,11 +152,10 @@
 
 		currentScene.add(ambientLight);
 
-		// Cahaya utama dari arah matahari.
 		const sunlight = new THREE.DirectionalLight('#fff1d6', 3);
 
-		sunlight.position.set(-15, 25, -20);
-		sunlight.target.position.set(0, 0, -18);
+		sunlight.position.set(-8, 20, -50);
+		sunlight.target.position.set(0, 0, -10);
 
 		sunlight.castShadow = true;
 
@@ -164,10 +163,10 @@
 		sunlight.shadow.camera.near = 0.5;
 		sunlight.shadow.camera.far = 100;
 
-		sunlight.shadow.camera.left = -45;
-		sunlight.shadow.camera.right = 45;
-		sunlight.shadow.camera.top = 45;
-		sunlight.shadow.camera.bottom = -45;
+		sunlight.shadow.camera.left = -35;
+		sunlight.shadow.camera.right = 35;
+		sunlight.shadow.camera.top = 35;
+		sunlight.shadow.camera.bottom = -35;
 
 		sunlight.shadow.bias = -0.0001;
 		sunlight.shadow.normalBias = 0.04;
@@ -285,7 +284,6 @@
 		<Sun {scene} />
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />
-
 
 		<MountainFog {scene} />
 		<Cabin {scene} />

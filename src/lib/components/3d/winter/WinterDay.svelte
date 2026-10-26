@@ -4,9 +4,9 @@
 	import { gsap } from 'gsap';
 
 	import Sun from './day-scene/Sun.svelte';
+	import Clouds from './day-scene/Clouds.svelte';
+	import Hills from './day-scene/Hills.svelte';
 
-	import Clouds from './night-scene/Clouds.svelte';
-	import Hills from './night-scene/Hills.svelte';
 	import MountainFog from './night-scene/MountainFog.svelte';
 	import Cabin from './night-scene/Cabin.svelte';
 	import CabinPath from './night-scene/CabinPath.svelte';
@@ -283,10 +283,10 @@
 
 	{#if scene}
 		<Sun {scene} />
-
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
-
 		<Hills {scene} />
+
+
 		<MountainFog {scene} />
 		<Cabin {scene} />
 		<CabinPath {scene} />

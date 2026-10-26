@@ -292,7 +292,6 @@
 			hillMeshes.push(hill);
 			hillMaterials.push(material);
 
-			// Hanya gunung berpuncak yang diberi topi salju.
 			if (shapeType === 'peak') {
 				createPeakSnow(width, height, position);
 			} else if (shapeType === 'ridge') {
@@ -300,20 +299,10 @@
 			}
 		}
 
-		// Posisi dan ukuran tetap mengikuti WinterNight.
-		// Gunung 1 — rolling
 		createHill(90, 12, '#719AC5', new THREE.Vector3(-60, 0, -48), 'rolling');
-
-		// Gunung 2 — peak
 		createHill(30, 9, '#4778B0', new THREE.Vector3(-28, -0.5, -47), 'peak');
-
-		// Gunung 3 — ridge
 		createHill(35, 10, '#5B89BC', new THREE.Vector3(0, 0, -46), 'ridge');
-
-		// Gunung 4 — rolling
 		createHill(50, 5, '#719AC5', new THREE.Vector3(29, 0, -47), 'rolling');
-
-		// Gunung 5 — peak
 		createHill(50, 7, '#527FAF', new THREE.Vector3(45, 0, -48), 'peak');
 
 		return () => {

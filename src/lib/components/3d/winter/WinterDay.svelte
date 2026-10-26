@@ -9,8 +9,8 @@
 	import MountainFog from './day-scene/MountainFog.svelte';
 	import Cabin from './day-scene/Cabin.svelte';
 	import CabinPath from './shared-scene/CabinPath.svelte';
+	import SnowTerrain from './day-scene/SnowTerrain.svelte';
 
-	import SnowTerrain from './night-scene/SnowTerrain.svelte';
 	import SnowRocks from './night-scene/SnowRocks.svelte';
 	import WinterGrass from './night-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
@@ -148,11 +148,11 @@
 		// 6. Pencahayaan untuk suasana siang
 
 		// Cahaya dasar agar area yang teduh tetap terlihat.
-		const ambientLight = new THREE.AmbientLight('#e1efff', 1.8);
+		const ambientLight = new THREE.AmbientLight('#e1efff', 2);
 
 		currentScene.add(ambientLight);
 
-		const sunlight = new THREE.DirectionalLight('#fff1d6', 3);
+		const sunlight = new THREE.DirectionalLight('#fff0c2', 3);
 
 		sunlight.position.set(-8, 20, -50);
 		sunlight.target.position.set(0, 0, -10);
@@ -175,7 +175,7 @@
 		currentScene.add(sunlight.target);
 
 		// Fill light untuk mempertahankan detail salju.
-		const hemisphereLight = new THREE.HemisphereLight('#d8edff', '#a5b5c7', 1);
+		const hemisphereLight = new THREE.HemisphereLight('#d8edff', '#a5b5c7', 1.5);
 
 		currentScene.add(hemisphereLight);
 

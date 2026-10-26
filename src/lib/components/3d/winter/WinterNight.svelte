@@ -12,7 +12,7 @@
 	import CabinPath from './shared-scene/CabinPath.svelte';
 	import SnowTerrain from './night-scene/SnowTerrain.svelte';
 	import SnowRocks from './night-scene/SnowRocks.svelte';
-	import WinterGrass from './night-scene/WinterGrass.svelte';
+	import WinterGrass from './shared-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
 	import Wolf from './night-scene/Wolf.svelte';
 	import SnowTrees from './night-scene/SnowTrees.svelte';

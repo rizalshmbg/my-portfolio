@@ -12,7 +12,7 @@
 	import SnowTerrain from './day-scene/SnowTerrain.svelte';
 	import SnowRocks from './day-scene/SnowRocks.svelte';
 
-	import WinterGrass from './night-scene/WinterGrass.svelte';
+	import WinterGrass from './shared-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
 	import Wolf from './night-scene/Wolf.svelte';
 	import SnowTrees from './night-scene/SnowTrees.svelte';
@@ -289,9 +289,9 @@
 		<CabinPath {scene} />
 		<SnowTerrain {scene} />
 		<SnowRocks {scene} />
-
 		<WinterGrass {scene} />
 		<Trees {scene} />
+
 
 		<Wolf
 			{scene}

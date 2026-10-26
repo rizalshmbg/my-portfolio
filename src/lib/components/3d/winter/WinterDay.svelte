@@ -6,8 +6,8 @@
 	import Sun from './day-scene/Sun.svelte';
 	import Clouds from './day-scene/Clouds.svelte';
 	import Hills from './day-scene/Hills.svelte';
+	import MountainFog from './day-scene/MountainFog.svelte';
 
-	import MountainFog from './night-scene/MountainFog.svelte';
 	import Cabin from './night-scene/Cabin.svelte';
 	import CabinPath from './night-scene/CabinPath.svelte';
 	import SnowTerrain from './night-scene/SnowTerrain.svelte';
@@ -284,8 +284,8 @@
 		<Sun {scene} />
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />
-
 		<MountainFog {scene} />
+
 		<Cabin {scene} />
 		<CabinPath {scene} />
 		<SnowTerrain {scene} />

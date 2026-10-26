@@ -182,8 +182,8 @@
 		async function loadTrees() {
 			try {
 				const [snowPineGLTF, treeWithSnowGLTF] = await Promise.all([
-					loader.loadAsync('/models/winter/snow-pine-tree.glb'),
-					loader.loadAsync('/models/winter/tree-with-snow.glb')
+					loader.loadAsync('/models/winter-night/snow-pine-tree.glb'),
+					loader.loadAsync('/models/winter-night/tree-with-snow.glb')
 				]);
 
 				if (disposed) return;

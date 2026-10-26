@@ -7,8 +7,8 @@
 	import Clouds from './day-scene/Clouds.svelte';
 	import Hills from './day-scene/Hills.svelte';
 	import MountainFog from './day-scene/MountainFog.svelte';
+	import Cabin from './day-scene/Cabin.svelte';
 
-	import Cabin from './night-scene/Cabin.svelte';
 	import CabinPath from './night-scene/CabinPath.svelte';
 	import SnowTerrain from './night-scene/SnowTerrain.svelte';
 	import SnowRocks from './night-scene/SnowRocks.svelte';

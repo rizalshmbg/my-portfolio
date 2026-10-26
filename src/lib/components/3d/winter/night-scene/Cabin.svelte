@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-	// import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 	let { scene }: { scene: THREE.Scene } = $props();
 

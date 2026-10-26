@@ -11,10 +11,10 @@
 	import CabinPath from './shared-scene/CabinPath.svelte';
 	import SnowTerrain from './day-scene/SnowTerrain.svelte';
 	import SnowRocks from './day-scene/SnowRocks.svelte';
-
 	import WinterGrass from './shared-scene/WinterGrass.svelte';
 	import Trees from './night-scene/Trees.svelte';
-	import Wolf from './night-scene/Wolf.svelte';
+	import Wolf from './day-scene/Wolf.svelte';
+
 	import SnowTrees from './night-scene/SnowTrees.svelte';
 
 	interface Props {
@@ -291,14 +291,14 @@
 		<SnowRocks {scene} />
 		<WinterGrass {scene} />
 		<Trees {scene} />
-
-
 		<Wolf
 			{scene}
 			registerUpdate={(callback) => {
 				updateWolf = callback;
 			}}
 		/>
+
+
 
 		<SnowTrees {scene} />
 	{/if}

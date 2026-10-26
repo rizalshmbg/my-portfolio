@@ -15,6 +15,164 @@
 		const hills: THREE.Mesh[] = [];
 		const hillTextures: THREE.CanvasTexture[] = [];
 
+		function createSnowFacet(
+			points: Array<[number, number]>,
+			width: number,
+			height: number,
+			position: THREE.Vector3,
+			color: string,
+			depthOffset = 0.08
+		) {
+			const shape = new THREE.Shape();
+
+			shape.moveTo(points[0][0] * width, points[0][1] * height);
+
+			for (let i = 1; i < points.length; i++) {
+				shape.lineTo(points[i][0] * width, points[i][1] * height);
+			}
+
+			shape.closePath();
+
+			const geometry = new THREE.ShapeGeometry(shape);
+
+			const material = new THREE.MeshBasicMaterial({
+				color,
+				side: THREE.DoubleSide,
+				depthTest: true,
+				depthWrite: false
+			});
+
+			const snow = new THREE.Mesh(geometry, material);
+
+			snow.position.copy(position);
+			snow.position.z += depthOffset;
+
+			scene.add(snow);
+			hills.push(snow);
+		}
+
+		function createPeakSnow(width: number, height: number, position: THREE.Vector3) {
+			// Salju utama di puncak.
+			createSnowFacet(
+				[
+					[-0.18, 0.55],
+					[-0.04, 1.0],
+					[0.08, 0.62],
+					[0.015, 0.72],
+					[-0.025, 0.66],
+					[-0.08, 0.58]
+				],
+				width,
+				height,
+				position,
+				'#46566F'
+			);
+
+			// Bayangan biru muda di sisi kanan.
+			createSnowFacet(
+				[
+					[-0.04, 1.0],
+					[0.08, 0.62],
+					[0.015, 0.72]
+				],
+				width,
+				height,
+				position,
+				'#35445C',
+				0.09
+			);
+
+			// Ujung salju di lereng kiri.
+			createSnowFacet(
+				[
+					[-0.18, 0.55],
+					[-0.08, 0.58],
+					[-0.25, 0.36]
+				],
+				width,
+				height,
+				position,
+				'#252F42',
+				0.12
+			);
+
+			// Ujung salju di lereng kanan.
+			createSnowFacet(
+				[
+					[0.015, 0.72],
+					[0.08, 0.62],
+					[0.22, 0.35],
+					[0.1, 0.54]
+				],
+				width,
+				height,
+				position,
+				'#252F42',
+				0.12
+			);
+		}
+
+		function createRidgeSnow(width: number, height: number, position: THREE.Vector3) {
+			// Salju pada puncak kiri.
+			createSnowFacet(
+				[
+					[-0.38, 0.25],
+					[-0.23, 0.48],
+					[-0.08, 0.34],
+					[-0.18, 0.4],
+					[-0.23, 0.39]
+				],
+				width,
+				height,
+				position,
+				'#46566F'
+			);
+
+			// Ujung salju pada lereng kiri.
+			createSnowFacet(
+				[
+					[-0.23, 0.39],
+					[-0.08, 0.34],
+					[-0.035, 0.27],
+					[-0.14, 0.35]
+				],
+				width,
+				height,
+				position,
+				'#252F42',
+				0.12
+			);
+
+			// Salju pada puncak utama.
+			createSnowFacet(
+				[
+					[-0.08, 0.34],
+					[0.08, 0.68],
+					[0.22, 0.42],
+					[0.13, 0.51],
+					[0.015, 0.53]
+				],
+				width,
+				height,
+				position,
+				'#46566F'
+			);
+
+			// Bayangan pada sisi kanan puncak utama.
+			createSnowFacet(
+				[
+					[0.08, 0.68],
+					[0.22, 0.42],
+					[0.13, 0.51]
+				],
+				width,
+				height,
+				position,
+				'#35445C',
+				0.09
+			);
+		}
+
 		function createHill(
 			width: number,
 			height: number,
@@ -169,6 +327,12 @@
 			scene.add(hill);
 			hills.push(hill);
 			hillTextures.push(gradientTexture);
+
+			if (shapeType === 'peak') {
+				createPeakSnow(width, height, position);
+			} else if (shapeType === 'ridge') {
+				createRidgeSnow(width, height, position);
+			}
 		}
 
 		createHill(90, 12, '#343d4d', new THREE.Vector3(-60, 0, -48), 'rolling', 'diagonal');

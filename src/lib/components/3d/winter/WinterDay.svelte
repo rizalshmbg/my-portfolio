@@ -8,8 +8,8 @@
 	import Hills from './day-scene/Hills.svelte';
 	import MountainFog from './day-scene/MountainFog.svelte';
 	import Cabin from './day-scene/Cabin.svelte';
+	import CabinPath from './shared-scene/CabinPath.svelte';
 
-	import CabinPath from './night-scene/CabinPath.svelte';
 	import SnowTerrain from './night-scene/SnowTerrain.svelte';
 	import SnowRocks from './night-scene/SnowRocks.svelte';
 	import WinterGrass from './night-scene/WinterGrass.svelte';

@@ -4,13 +4,15 @@
 	import 'lenis/dist/lenis.css';
 
 	import WinterNight from '#lib/components/3d/winter/WinterNight.svelte';
+	import WinterDay from '#lib/components/3d/winter/WinterDay.svelte';
+
 	import Navbar from '#lib/components/portfolio/Navbar.svelte';
 	import Home from '#lib/components/portfolio/Home.svelte';
 	import About from '#lib/components/portfolio/About.svelte';
 	import Experience from '#lib/components/portfolio/Experience.svelte';
 	import Contact from '#lib/components/portfolio/Contact.svelte';
 
-	let theme = $state<'dark' | 'light'>('dark');
+	let theme = $state<'dark' | 'light'>('light');
 	let activeSection = $state('home');
 	let cameraProgress = $state(0);
 
@@ -103,8 +105,8 @@
 	<div class="scene-background absolute inset-0">
 		{#if theme === 'dark'}
 			<WinterNight progress={cameraProgress} />
-		{:else}
-			<div class="winter-day-placeholder"></div>
+			{:else}
+			<WinterDay progress={cameraProgress} />
 		{/if}
 	</div>
 
@@ -139,12 +141,6 @@
 
 	.scene-background {
 		z-index: 0;
-	}
-
-	.winter-day-placeholder {
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(#c9d9e8, #f5e8c9);
 	}
 
 	.horizontal-viewport {

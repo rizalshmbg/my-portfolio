@@ -101,11 +101,11 @@
 	<meta name="description" content="Portfolio of Rizal Sihombing, Full-Stack Developer." />
 </svelte:head>
 
-<main class="portfolio relative h-dvh w-full overflow-hidden">
+<main class="relative h-dvh w-full overflow-hidden" data-theme={theme}>
 	<div class="scene-background absolute inset-0">
 		{#if theme === 'dark'}
 			<WinterNight progress={cameraProgress} />
-			{:else}
+		{:else}
 			<WinterDay progress={cameraProgress} />
 		{/if}
 	</div>
@@ -134,11 +134,6 @@
 </main>
 
 <style lang="scss">
-	.portfolio {
-		color: #f5f0e8;
-		background: #101114;
-	}
-
 	.scene-background {
 		z-index: 0;
 	}

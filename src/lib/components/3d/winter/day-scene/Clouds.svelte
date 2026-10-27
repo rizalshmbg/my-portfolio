@@ -261,7 +261,7 @@
 			color: '#FFFFFF',
 			opacity: 0.98,
 			seed: 20,
-			speed: 0.3,
+			speed: 0.49,
 			direction: 1
 		});
 
@@ -272,7 +272,7 @@
 			color: '#F8FBFF',
 			opacity: 0.88,
 			seed: 35,
-			speed: 0.08,
+			speed: 0.38,
 			direction: -1
 		});
 
@@ -283,7 +283,7 @@
 			color: '#FFFFFF',
 			opacity: 0.96,
 			seed: 120,
-			speed: 0.06,
+			speed: 0.26,
 			direction: 1
 		});
 
@@ -295,7 +295,7 @@
 			color: '#F8FBFF',
 			opacity: 0.82,
 			seed: 86,
-			speed: 0.14,
+			speed: 0.34,
 			direction: -1
 		});
 
@@ -307,7 +307,7 @@
 			color: '#FFFFFF',
 			opacity: 0.96,
 			seed: 62,
-			speed: 0.25,
+			speed: 0.41,
 			direction: -1
 		});
 
@@ -318,7 +318,7 @@
 			color: '#F8FBFF',
 			opacity: 0.88,
 			seed: 95,
-			speed: 0.17,
+			speed: 0.37,
 			direction: 1
 		});
 

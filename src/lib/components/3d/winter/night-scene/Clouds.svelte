@@ -216,7 +216,7 @@
 			color: '#252b35',
 			opacity: 1,
 			seed: 20,
-			speed: 0.30,
+			speed: 0.49,
 			direction: 1
 		});
 		createCloud({
@@ -226,7 +226,7 @@
 			color: '#303744',
 			opacity: 0.82,
 			seed: 20,
-			speed: 0.08,
+			speed: 0.38,
 			direction: -1
 		});
 		createCloud({
@@ -236,7 +236,7 @@
 			color: '#292d33',
 			opacity: 1,
 			seed: 120,
-			speed: 0.06,
+			speed: 0.26,
 			direction: 1
 		});
 
@@ -247,7 +247,7 @@
 			color: '#41414a',
 			opacity: 0.62,
 			seed: 86,
-			speed: 0.14,
+			speed: 0.34,
 			direction: -1
 		});
 
@@ -259,7 +259,7 @@
 			color: '#292d35',
 			opacity: 1,
 			seed: 62,
-			speed: 0.25,
+			speed: 0.41,
 			direction: -1
 		});
 		createCloud({
@@ -269,7 +269,7 @@
 			color: '#343945',
 			opacity: 0.82,
 			seed: 62,
-			speed: 0.17,
+			speed: 0.37,
 			direction: 1
 		});
 		

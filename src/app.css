@@ -1,5 +1,122 @@
 @import 'tailwindcss';
 
+/* ========================================
+   CUSTOM FONTS
+======================================== */
+
+@font-face {
+	font-family: 'Maharlika-Regular';
+	src: url('/fonts/Maharlika-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat-Regular';
+	src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat-Medium';
+	src: url('/fonts/Montserrat-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat-SemiBold';
+	src: url('/fonts/Montserrat-SemiBold.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat-Bold';
+	src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* ========================================
+   1. DESIGN TOKENS
+======================================== */
+
+:root {
+	/* Brand Colors */
+	--palette-brand: #ffc65c;
+	--palette-brand-hover: #e6ad43;
+
+	/* Typography */
+	--font-display: 'Montserrat-Regular', sans-serif;
+	--font-body: 'Montserrat-Regular', sans-serif;
+}
+
+/* ========================================
+   2. DARK THEME
+======================================== */
+
+:root,
+[data-theme='dark'] {
+	color-scheme: dark;
+
+	--theme-background: #10141d;
+	--theme-surface: #191f2b;
+
+	--theme-text-primary: #f7f4ef;
+	--theme-text-secondary: #a7afbd;
+
+	--theme-border: rgb(255 255 255 / 12%);
+}
+
+/* ========================================
+   3. LIGHT THEME
+======================================== */
+
+[data-theme='light'] {
+	color-scheme: light;
+
+	--theme-background: #f8f6f0;
+	--theme-surface: #ffffff;
+
+	--theme-text-primary: #202631;
+	--theme-text-secondary: #626b79;
+
+	--theme-border: rgb(32 38 49 / 12%);
+}
+
+/* ========================================
+   4. TAILWIND CSS THEME MAPPING
+======================================== */
+
+@theme inline {
+	/* Fonts */
+	--font-display: var(--type-display);
+	--font-body: var(--type-body);
+
+	/* Colors */
+	--color-brand: var(--palette-brand);
+	--color-brand-hover: var(--palette-brand-hover);
+
+	--color-background: var(--theme-background);
+	--color-surface: var(--theme-surface);
+
+	--color-text-primary: var(--theme-text-primary);
+	--color-text-secondary: var(--theme-text-secondary);
+
+	--color-border: var(--theme-border);
+}
+
+/* ========================================
+   5. GLOBAL STYLES
+======================================== */
+
 html,
 body {
 	margin: 0;
@@ -7,6 +124,34 @@ body {
 	min-height: 100%;
 }
 
+html {
+	font-family: var(--font-body);
+}
+
 body {
 	overflow-x: hidden;
+	background: var(--theme-background);
+	color: var(--theme-text-primary);
+}
+
+/* ========================================
+   6. GLOBAL INTERACTIONS
+======================================== */
+
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button {
+	font: inherit;
+}
+
+/* ========================================
+   7. TEXT SELECTION
+======================================== */
+
+::selection {
+	background: var(--palette-brand);
+	color: #10141d;
 }

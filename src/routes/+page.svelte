@@ -12,7 +12,7 @@
 	import Experience from '#lib/components/portfolio/Experience.svelte';
 	import Contact from '#lib/components/portfolio/Contact.svelte';
 
-	let theme = $state<'dark' | 'light'>('light');
+	let theme = $state<'dark' | 'light'>('dark');
 	let activeSection = $state('home');
 	let cameraProgress = $state(0);
 

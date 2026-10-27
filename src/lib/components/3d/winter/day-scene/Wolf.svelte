@@ -190,7 +190,7 @@
 		// =========================================
 
 		loader.load(
-			'/models/winter-night/wolf.glb',
+			'/models/shared-scene/wolf.glb',
 
 			(gltf) => {
 				if (disposed) {

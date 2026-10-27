@@ -3,6 +3,7 @@
 	import * as THREE from 'three';
 	import { gsap } from 'gsap';
 
+	import Sky from './day-scene/Sky.svelte';
 	import Sun from './day-scene/Sun.svelte';
 	import Clouds from './day-scene/Clouds.svelte';
 	import Hills from './day-scene/Hills.svelte';
@@ -43,8 +44,8 @@
 		// 1. Membuat scene
 		const currentScene = new THREE.Scene();
 
-		currentScene.background = new THREE.Color('#87c5f5');
-		currentScene.fog = new THREE.Fog('#c5e1f2', 45, 100);
+		currentScene.background = new THREE.Color('#83c5f7');
+		currentScene.fog = new THREE.Fog('#83c5f7', 45, 100);
 
 		scene = currentScene;
 
@@ -283,6 +284,7 @@
 	<canvas bind:this={canvas}></canvas>
 
 	{#if scene}
+		<Sky {scene} />
 		<Sun {scene} />
 		<Clouds {scene} registerUpdate={(callback) => (updateClouds = callback)} />
 		<Hills {scene} />

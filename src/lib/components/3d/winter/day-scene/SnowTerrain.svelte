@@ -258,12 +258,12 @@
 		riverGeometry.computeVertexNormals();
 
 		const waterMaterial = new THREE.MeshPhysicalMaterial({
-			color: '#69bce8',
+			color: '#519acb',
 			roughness: 0.38,
 			metalness: 0.0,
 			specularIntensity: 0.15,
-			specularColor: new THREE.Color('#c8eaff'),
-			emissive: '#163d59',
+			specularColor: new THREE.Color('#b5d9f0'),
+			emissive: '#16384f',
 			emissiveIntensity: 0.025,
 			side: THREE.DoubleSide
 		});

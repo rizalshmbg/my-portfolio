@@ -27,7 +27,7 @@
 	<div class="navbar-inner">
 		<!-- Logo -->
 		<button type="button" class="logo" onclick={() => navigateTo('home')} aria-label="Go to Home">
-			Rizal Sihombing<span>.</span>
+			RS<span>.</span>
 		</button>
 
 		<div class="navbar-actions">

@@ -2,7 +2,7 @@
 
 </script>
 
-<section class="contact">
+<section class="contact  page-container">
   <h1>
     Contact
   </h1>

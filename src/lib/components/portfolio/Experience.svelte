@@ -2,7 +2,7 @@
 
 </script>
 
-<section class="experience">
+<section class="experience page-container">
   <h1>
     Experience
   </h1>

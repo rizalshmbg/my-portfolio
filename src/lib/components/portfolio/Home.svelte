@@ -2,7 +2,7 @@
 
 </script>
 
-<section class="home">
+<section class="home page-container">
   <h1>
     Home
   </h1>

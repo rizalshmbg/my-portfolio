@@ -45,6 +45,7 @@
 				return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 			},
 			onComplete: () => {
+				activeSection = id;
 				isNavigating = false;
 			}
 		});
@@ -184,6 +185,8 @@
 		// OBSERVER
 		const observer = new IntersectionObserver(
 			(entries) => {
+				if (isNavigating) return;
+
 				for (const entry of entries) {
 					if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
 						activeSection = entry.target.id;

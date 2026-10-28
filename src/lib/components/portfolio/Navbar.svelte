@@ -24,54 +24,131 @@
 </script>
 
 <header class="navbar">
-	<div class="navbar-inner">
-		<!-- Logo -->
-		<button type="button" class="logo" onclick={() => navigateTo('home')} aria-label="Go to Home">
-			RS<span>.</span>
-		</button>
+	<div class="page-container">
+		<div class="navbar-inner">
+			<!-- Logo -->
+			<button type="button" class="logo" onclick={() => navigateTo('home')} aria-label="Go to Home">
+				RS<span>.</span>
+			</button>
 
-		<div class="navbar-actions">
-			<!-- Navigasi desktop -->
-			<nav class="desktop-nav" aria-label="Main navigation">
-				{#each navItems as item (item.id)}
-					<button
-						type="button"
-						class="nav-link"
-						class:active={activeSection === item.id}
-						aria-current={activeSection === item.id ? 'page' : undefined}
-						onclick={() => navigateTo(item.id)}
-					>
-						{item.label}
-					</button>
-				{/each}
-			</nav>
+			<div class="navbar-actions">
+				<!-- Navigasi desktop -->
+				<nav class="desktop-nav" aria-label="Main navigation">
+					{#each navItems as item (item.id)}
+						<button
+							type="button"
+							class="nav-link"
+							class:active={activeSection === item.id}
+							aria-current={activeSection === item.id ? 'page' : undefined}
+							onclick={() => navigateTo(item.id)}
+						>
+							{item.label}
+						</button>
+					{/each}
+				</nav>
 
-			<!-- Toggle tema -->
-			<button
-				type="button"
-				class="theme-toggle"
-				onclick={onToggleTheme}
-				aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-				title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-			>
-				{#if theme === 'dark'}
-					<svg
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.8"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						aria-hidden="true"
-					>
-						<circle cx="12" cy="12" r="4" />
-						<path
-							d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42
+				<!-- Toggle tema -->
+				<button
+					type="button"
+					class="theme-toggle"
+					onclick={onToggleTheme}
+					aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+					title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+				>
+					{#if theme === 'dark'}
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<circle cx="12" cy="12" r="4" />
+							<path
+								d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42
 							m11.3 11.3 1.42 1.42M2 12h2m16 0h2
 							M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"
-						/>
+							/>
+						</svg>
+					{:else}
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.8"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<path
+								d="M20.9 13A9 9 0 0 1 11 3.1
+							9 9 0 1 0 20.9 13Z"
+							/>
+						</svg>
+					{/if}
+				</button>
+
+				<!-- Hamburger toggle: tablet dan mobile -->
+				<button
+					type="button"
+					class="menu-toggle"
+					class:opened={menuOpen}
+					onclick={() => (menuOpen = !menuOpen)}
+					aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+					aria-expanded={menuOpen}
+					aria-controls="mobile-navigation"
+				>
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Navigasi mobile -->
+		<nav
+			id="mobile-navigation"
+			class="mobile-nav"
+			class:visible={menuOpen}
+			aria-label="Mobile navigation"
+			inert={!menuOpen}
+		>
+			<!-- Header khusus mobile -->
+			<div class="mobile-nav-header">
+				<!-- Tombol tutup -->
+				<button
+					type="button"
+					class="mobile-close"
+					onclick={() => (menuOpen = false)}
+					aria-label="Close navigation menu"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M18 6 6 18M6 6l12 12" />
 					</svg>
-				{:else}
+				</button>
+			</div>
+
+			<!-- Daftar navigasi -->
+			{#each navItems as item (item.id)}
+				<button
+					type="button"
+					class="mobile-nav-link"
+					class:active={activeSection === item.id}
+					aria-current={activeSection === item.id ? 'page' : undefined}
+					onclick={() => navigateTo(item.id)}
+					tabindex={menuOpen ? 0 : -1}
+				>
+					<span>{item.label}</span>
 					<svg
 						viewBox="0 0 24 24"
 						fill="none"
@@ -81,87 +158,12 @@
 						stroke-linejoin="round"
 						aria-hidden="true"
 					>
-						<path
-							d="M20.9 13A9 9 0 0 1 11 3.1
-							9 9 0 1 0 20.9 13Z"
-						/>
+						<path d="M5 12h14m-6-6 6 6-6 6" />
 					</svg>
-				{/if}
-			</button>
-
-			<!-- Hamburger toggle: tablet dan mobile -->
-			<button
-				type="button"
-				class="menu-toggle"
-				class:opened={menuOpen}
-				onclick={() => (menuOpen = !menuOpen)}
-				aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-				aria-expanded={menuOpen}
-				aria-controls="mobile-navigation"
-			>
-				<span></span>
-				<span></span>
-				<span></span>
-			</button>
-		</div>
+				</button>
+			{/each}
+		</nav>
 	</div>
-
-	<!-- Navigasi mobile -->
-	<nav
-		id="mobile-navigation"
-		class="mobile-nav"
-		class:visible={menuOpen}
-		aria-label="Mobile navigation"
-		inert={!menuOpen}
-	>
-		<!-- Header khusus mobile -->
-		<div class="mobile-nav-header">
-			<!-- Tombol tutup -->
-			<button
-				type="button"
-				class="mobile-close"
-				onclick={() => (menuOpen = false)}
-				aria-label="Close navigation menu"
-			>
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M18 6 6 18M6 6l12 12" />
-				</svg>
-			</button>
-		</div>
-
-		<!-- Daftar navigasi -->
-		{#each navItems as item (item.id)}
-			<button
-				type="button"
-				class="mobile-nav-link"
-				class:active={activeSection === item.id}
-				aria-current={activeSection === item.id ? 'page' : undefined}
-				onclick={() => navigateTo(item.id)}
-				tabindex={menuOpen ? 0 : -1}
-			>
-				<span>{item.label}</span>
-				<svg
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.8"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					aria-hidden="true"
-				>
-					<path d="M5 12h14m-6-6 6 6-6 6" />
-				</svg>
-			</button>
-		{/each}
-	</nav>
 </header>
 
 <style lang="scss">
@@ -171,7 +173,7 @@
 		z-index: 50;
 		box-sizing: border-box;
 		width: 100%;
-		padding: 20px 6%;
+		padding: 20px 0;
 
 		background: var(--glass-background-transparent);
 		border-bottom: 1px solid var(--glass-border);
@@ -185,7 +187,6 @@
 		justify-content: space-between;
 		gap: 24px;
 		width: 100%;
-		max-width: 1440px;
 		margin-inline: auto;
 	}
 
@@ -462,10 +463,6 @@
 	}
 
 	@media (max-width: 900px) {
-		.navbar {
-			padding-inline: 5%;
-		}
-
 		.desktop-nav {
 			gap: 20px;
 		}
@@ -482,7 +479,7 @@
 
 	@media (max-width: 480px) {
 		.navbar {
-			padding: 18px 5%;
+			padding: 18px 0;
 		}
 
 		.navbar-inner {

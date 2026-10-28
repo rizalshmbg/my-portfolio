@@ -49,10 +49,6 @@
 ======================================== */
 
 :root {
-	/* Brand Colors */
-	--palette-brand: #ffc65c;
-	--palette-brand-hover: #e6ad43;
-
 	/* Typography */
 	--font-display: 'Montserrat-Regular', sans-serif;
 	--font-body: 'Montserrat-Regular', sans-serif;
@@ -68,11 +64,20 @@
 
 	--theme-background: #10141d;
 	--theme-surface: #191f2b;
+	--theme-surface-hover: #222b3a;
 
 	--theme-text-primary: #f7f4ef;
 	--theme-text-secondary: #a7afbd;
 
 	--theme-border: rgb(255 255 255 / 12%);
+
+	--glass-background: rgb(25 31 43 / 45%);
+	--glass-background-transparent: rgb(25 31 43 / 1%);
+	--glass-border: rgb(255 255 255 / 12%);
+	--glass-highlight: rgb(255 255 255 / 8%);
+
+	--palette-brand: #ffc65c;
+	--palette-brand-hover: #e6ad43;
 }
 
 /* ========================================
@@ -84,11 +89,19 @@
 
 	--theme-background: #f8f6f0;
 	--theme-surface: #ffffff;
+	--theme-surface-hover: #eae7df;
 
-	--theme-text-primary: #202631;
-	--theme-text-secondary: #626b79;
+	--theme-text-primary: #111827;
+	--theme-text-secondary: #374151;
+	--theme-border: rgb(17 24 39 / 16%);
 
-	--theme-border: rgb(32 38 49 / 12%);
+	--glass-background: rgb(255 255 255 / 45%);
+	--glass-background-transparent: rgb(255 255 255 / 1%);
+	--glass-border: rgb(17 24 39 / 12%);
+	--glass-highlight: rgb(255 255 255 / 40%);
+
+	--palette-brand: #f5b942;
+	--palette-brand-hover: #e5a323;
 }
 
 /* ========================================
@@ -96,11 +109,9 @@
 ======================================== */
 
 @theme inline {
-	/* Fonts */
-	--font-display: var(--type-display);
-	--font-body: var(--type-body);
+	--font-display: 'Montserrat-Regular', sans-serif;
+	--font-body: 'Montserrat-Regular', sans-serif;
 
-	/* Colors */
 	--color-brand: var(--palette-brand);
 	--color-brand-hover: var(--palette-brand-hover);
 
@@ -131,6 +142,10 @@ html {
 body {
 	overflow-x: hidden;
 	background: var(--theme-background);
+	color: var(--theme-text-primary);
+}
+
+main {
 	color: var(--theme-text-primary);
 }
 

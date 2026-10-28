@@ -23,7 +23,7 @@
 	}
 </script>
 
-<header class="navbar" class:light={theme === 'light'}>
+<header class="navbar">
 	<div class="navbar-inner">
 		<!-- Logo -->
 		<button type="button" class="logo" onclick={() => navigateTo('home')} aria-label="Go to Home">
@@ -114,6 +114,30 @@
 		aria-label="Mobile navigation"
 		inert={!menuOpen}
 	>
+		<!-- Header khusus mobile -->
+		<div class="mobile-nav-header">
+			<!-- Tombol tutup -->
+			<button
+				type="button"
+				class="mobile-close"
+				onclick={() => (menuOpen = false)}
+				aria-label="Close navigation menu"
+			>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M18 6 6 18M6 6l12 12" />
+				</svg>
+			</button>
+		</div>
+
+		<!-- Daftar navigasi -->
 		{#each navItems as item (item.id)}
 			<button
 				type="button"
@@ -148,45 +172,11 @@
 		box-sizing: border-box;
 		width: 100%;
 		padding: 20px 6%;
-		color: #f7f4ef;
 
-		&.light {
-			color: #202631;
-
-			.logo {
-				color: #202631;
-			}
-
-			.nav-link,
-			.mobile-nav-link {
-				color: #202631;
-
-				&:hover,
-				&.active {
-					color: #a56a08;
-				}
-			}
-
-			.nav-link::after {
-				background: #d99b32;
-			}
-
-			.theme-toggle,
-			.menu-toggle {
-				border-color: rgb(32 38 49 / 30%);
-				color: #8b5b0b;
-				background: rgb(255 255 255 / 55%);
-			}
-
-			.mobile-nav {
-				border-color: rgb(32 38 49 / 12%);
-				background: rgb(248 246 240 / 96%);
-			}
-
-			.mobile-nav-link + .mobile-nav-link {
-				border-color: rgb(32 38 49 / 10%);
-			}
-		}
+		background: var(--glass-background-transparent);
+		border-bottom: 1px solid var(--glass-border);
+		backdrop-filter: blur(1px) saturate(140%);
+		-webkit-backdrop-filter: blur(1px) saturate(140%);
 	}
 
 	.navbar-inner {
@@ -195,7 +185,7 @@
 		justify-content: space-between;
 		gap: 24px;
 		width: 100%;
-		max-width: 1600px;
+		max-width: 1440px;
 		margin-inline: auto;
 	}
 
@@ -204,14 +194,13 @@
 		padding: 0;
 		border: 0;
 		background: transparent;
-		color: #fff;
-		font-family: Georgia, 'Times New Roman', serif;
+		font-family: 'Maharlika-Regular', 'Georgia', serif;
 		font-size: clamp(1.25rem, 2.2vw, 2.25rem);
 		font-weight: 700;
 		cursor: pointer;
 
 		span {
-			color: #ffc65c;
+			color: var(--palette-brand);
 		}
 	}
 
@@ -232,7 +221,6 @@
 		padding: 8px 0;
 		border: 0;
 		background: transparent;
-		color: #f7f4ef;
 		font: inherit;
 		font-size: clamp(0.8rem, 1vw, 1rem);
 		white-space: nowrap;
@@ -246,16 +234,19 @@
 			left: 0;
 			height: 3px;
 			border-radius: 4px;
-			background: #ffc65c;
+			background: var(--palette-brand);
 			content: '';
 			transform: scaleX(0);
 			transform-origin: left;
 			transition: transform 200ms ease;
 		}
 
-		&:hover,
+		&:hover {
+			color: var(--palette-brand-hover);
+		}
+
 		&.active {
-			color: #ffc65c;
+			color: var(--palette-brand);
 		}
 
 		&.active::after {
@@ -272,18 +263,20 @@
 		width: 40px;
 		height: 40px;
 		padding: 0;
-		border: 1px solid rgb(255 255 255 / 35%);
+		border: 1px solid var(--theme-border);
 		border-radius: 50%;
-		background: rgb(255 255 255 / 5%);
-		color: #ffc65c;
+		background: var(--glass-background-transparent);
+		backdrop-filter: blur(0px) saturate(160%);
+		color: var(--palette-brand);
 		cursor: pointer;
 		transition:
+			color 200ms ease,
 			background-color 200ms ease,
 			border-color 200ms ease,
 			transform 200ms ease;
 
 		&:focus-visible {
-			outline: 2px solid #ffc65c;
+			outline: 2px solid var(--palette-brand);
 			outline-offset: 4px;
 		}
 	}
@@ -295,8 +288,8 @@
 		}
 
 		&:hover {
-			border-color: #ffc65c;
-			background: rgb(255 198 92 / 12%);
+			border-color: var(--palette-brand);
+			background: var(--theme-surface-hover);
 		}
 	}
 
@@ -325,6 +318,8 @@
 		}
 
 		&.opened {
+			display: none;
+
 			span:nth-child(1) {
 				transform: rotate(45deg);
 			}
@@ -341,32 +336,83 @@
 
 	/* Panel navigasi mobile */
 	.mobile-nav {
-		position: absolute;
-		top: calc(100% - 4px);
-		right: 6%;
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 49;
+
 		display: flex;
 		flex-direction: column;
-		width: min(280px, 88vw);
-		padding: 8px 16px;
-		border: 1px solid rgb(255 255 255 / 12%);
-		border-radius: 12px;
-		background: rgb(16 20 29 / 96%);
-		box-shadow: 0 16px 40px rgb(0 0 0 / 25%);
-		backdrop-filter: blur(16px);
-		opacity: 0;
+
+		width: min(280px, 85vw);
+		height: 100vh;
+		height: 100dvh;
+		padding: 12px 24px 32px;
+		box-sizing: border-box;
+
+		border-left: 1px solid var(--theme-border);
+		background: var(--glass-background);
+		backdrop-filter: blur(5px) saturate(160%);
+		box-shadow: -12px 0 40px rgb(0 0 0 / 12%);
+
+		overflow-y: auto;
+
+		transform: translateX(100%);
 		visibility: hidden;
 		pointer-events: none;
-		transform: translateY(-8px);
+
 		transition:
-			opacity 180ms ease,
-			transform 180ms ease,
-			visibility 180ms ease;
+			transform 350ms cubic-bezier(0.22, 1, 0.36, 1),
+			visibility 350ms ease;
 
 		&.visible {
-			opacity: 1;
+			transform: translateX(0);
 			visibility: visible;
 			pointer-events: auto;
-			transform: translateY(0);
+		}
+	}
+
+	/* Header khusus mobile */
+	.mobile-nav-header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin-bottom: 12px;
+	}
+
+	.mobile-close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border: 1px solid var(--theme-border);
+		border-radius: 50%;
+		background: var(--theme-surface);
+		color: var(--palette-brand);
+		cursor: pointer;
+		transition:
+			color 200ms ease,
+			background-color 200ms ease,
+			border-color 200ms ease,
+			transform 200ms ease;
+
+		&:hover {
+			color: var(--palette-brand-hover);
+			border-color: var(--palette-brand-hover);
+			background: var(--theme-surface-hover);
+			transform: rotate(90deg);
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--palette-brand);
+			outline-offset: 4px;
+		}
+
+		svg {
+			width: 20px;
+			height: 20px;
 		}
 	}
 
@@ -378,8 +424,8 @@
 		width: 100%;
 		padding: 14px 4px;
 		border: 0;
+		color: var(--theme-text-primary);
 		background: transparent;
-		color: #f7f4ef;
 		font: inherit;
 		font-size: 0.95rem;
 		text-align: left;
@@ -393,16 +439,25 @@
 		}
 
 		& + & {
-			border-top: 1px solid rgb(255 255 255 / 10%);
+			border-top: 1px solid var(--theme-border);
 		}
 
-		&:hover,
+		&:hover {
+			color: var(--palette-brand-hover);
+		}
+
 		&.active {
-			color: #ffc65c;
+			color: var(--palette-brand);
 		}
 
 		&:hover svg {
 			transform: translateX(3px);
+		}
+	}
+
+	@media (min-width: 901px) {
+		.mobile-nav {
+			display: none;
 		}
 	}
 
@@ -422,10 +477,6 @@
 
 		.menu-toggle {
 			display: inline-flex;
-		}
-
-		.mobile-nav {
-			right: 5%;
 		}
 	}
 
@@ -456,11 +507,6 @@
 			width: 18px;
 			height: 18px;
 		}
-
-		.mobile-nav {
-			right: 5%;
-			width: min(280px, 90vw);
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
@@ -470,7 +516,8 @@
 		.menu-toggle,
 		.menu-toggle span,
 		.mobile-nav,
-		.mobile-nav-link svg {
+		.mobile-nav-link svg,
+		.mobile-close {
 			transition: none;
 		}
 	}

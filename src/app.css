@@ -162,6 +162,14 @@ button {
 	font: inherit;
 }
 
+.page-container {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 64px);
+  box-sizing: border-box;
+}
+
 /* ========================================
    7. TEXT SELECTION
 ======================================== */

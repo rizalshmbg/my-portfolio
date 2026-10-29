@@ -76,8 +76,8 @@
 	--glass-border: rgb(255 255 255 / 12%);
 	--glass-highlight: rgb(255 255 255 / 8%);
 
-	--palette-brand: #ffc65c;
-	--palette-brand-hover: #e6ad43;
+	--palette-brand: #FFBE0B;
+	--palette-brand-hover: #E5A900;
 }
 
 /* ========================================
@@ -100,8 +100,8 @@
 	--glass-border: rgb(17 24 39 / 12%);
 	--glass-highlight: rgb(255 255 255 / 40%);
 
-	--palette-brand: #f5b942;
-	--palette-brand-hover: #e5a323;
+	--palette-brand: #FFBE0B;
+	--palette-brand-hover: #F0AD00;
 }
 
 /* ========================================

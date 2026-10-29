@@ -1,4 +1,7 @@
 <script lang="ts">
+	import logoBlack from '#lib/assets/logo/logo-black.png';
+	import logoWhite from '#lib/assets/logo/logo-white.png';
+
 	interface Props {
 		activeSection: string;
 		onNavigate: (id: string) => void;
@@ -28,7 +31,8 @@
 		<div class="navbar-inner">
 			<!-- Logo -->
 			<button type="button" class="logo" onclick={() => navigateTo('home')} aria-label="Go to Home">
-				RS<span>.</span>
+				<!-- RS<span>.</span> -->
+				<img src={theme === 'dark' ? logoWhite : logoBlack} alt="Logo" />
 			</button>
 
 			<div class="navbar-actions">
@@ -191,6 +195,9 @@
 	}
 
 	.logo {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		flex-shrink: 0;
 		padding: 0;
 		border: 0;
@@ -200,8 +207,15 @@
 		font-weight: 700;
 		cursor: pointer;
 
-		span {
+		/* span {
 			color: var(--palette-brand);
+		} */
+
+		img {
+			display: block;
+			width: 32px;
+			height: 32px;
+			object-fit: contain;
 		}
 	}
 

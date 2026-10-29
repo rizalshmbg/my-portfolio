@@ -366,7 +366,7 @@
 		box-sizing: border-box;
 
 		border-left: 1px solid var(--theme-border);
-		background: var(--glass-background);
+		background: var(--theme-background);
 		backdrop-filter: blur(5px) saturate(160%);
 		box-shadow: -12px 0 40px rgb(0 0 0 / 12%);
 

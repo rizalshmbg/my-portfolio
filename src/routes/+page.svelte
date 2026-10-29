@@ -246,7 +246,7 @@
 		<div class="horizontal-track">
 			<div id="home" class="panel">
 				<div class="panel-content">
-					<Home />
+					<Home onNavigate={goToSection} />
 				</div>
 			</div>
 

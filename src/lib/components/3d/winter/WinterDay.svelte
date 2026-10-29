@@ -150,11 +150,11 @@
 		// 6. Pencahayaan untuk suasana siang
 
 		// Cahaya dasar agar area yang teduh tetap terlihat.
-		const ambientLight = new THREE.AmbientLight('#e1efff', 2);
+		const ambientLight = new THREE.AmbientLight('#b9cce3', 2);
 
 		currentScene.add(ambientLight);
 
-		const sunlight = new THREE.DirectionalLight('#fff0c2', 3);
+		const sunlight = new THREE.DirectionalLight('#dce8f5', 2);
 
 		sunlight.position.set(-5, 20, -50);
 		sunlight.target.position.set(0, 0, -10);
@@ -177,7 +177,7 @@
 		currentScene.add(sunlight.target);
 
 		// Fill light untuk mempertahankan detail salju.
-		const hemisphereLight = new THREE.HemisphereLight('#d8edff', '#a5b5c7', 1.5);
+		const hemisphereLight = new THREE.HemisphereLight('#c5d9f0', '#8495aa', 1.5);
 
 		currentScene.add(hemisphereLight);
 

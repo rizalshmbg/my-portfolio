@@ -307,14 +307,16 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		box-sizing: border-box;
-		padding-block: 120px 80px;
+		/* padding-block: 120px 80px; */
+		margin-block: 82px 0;
 		overscroll-behavior-y: contain;
 		scrollbar-width: thin;
 	}
 
 	@media (max-width: 700px) {
 		.panel-content {
-			padding-block: 110px 70px;
+			/* padding-block: 110px 70px; */
+			margin-block: 75px 0;
 		}
 	}
 </style>

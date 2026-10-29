@@ -309,6 +309,7 @@
 		box-sizing: border-box;
 		/* padding-block: 120px 80px; */
 		margin-block: 82px 0;
+		padding-block-end: 100px;
 		overscroll-behavior-y: contain;
 		scrollbar-width: thin;
 	}
@@ -317,6 +318,7 @@
 		.panel-content {
 			/* padding-block: 110px 70px; */
 			margin-block: 75px 0;
+			padding-block-end: 80px;
 		}
 	}
 </style>

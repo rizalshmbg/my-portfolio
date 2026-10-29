@@ -181,8 +181,8 @@
 
 		background: var(--glass-background-transparent);
 		border-bottom: 1px solid var(--glass-border);
-		backdrop-filter: blur(1px) saturate(140%);
-		-webkit-backdrop-filter: blur(1px) saturate(140%);
+		backdrop-filter: blur(1px) saturate(100%);
+		-webkit-backdrop-filter: blur(1px) saturate(100%);
 	}
 
 	.navbar-inner {

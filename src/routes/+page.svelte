@@ -299,6 +299,7 @@
 		min-width: 0;
 		overflow: hidden;
 		box-sizing: border-box;
+		padding-block-start: 82px;
 	}
 
 	.panel-content {
@@ -308,17 +309,21 @@
 		overflow-y: auto;
 		box-sizing: border-box;
 		/* padding-block: 120px 80px; */
-		margin-block: 82px 0;
-		padding-block-end: 100px;
+		/* margin-block-start: 82px; */
+		/* padding-block-end: 100px; */
 		overscroll-behavior-y: contain;
 		scrollbar-width: thin;
 	}
 
 	@media (max-width: 700px) {
-		.panel-content {
-			/* padding-block: 110px 70px; */
-			margin-block: 75px 0;
-			padding-block-end: 80px;
+		.panel {
+			padding-block-start: 75px;
 		}
+
+		/* .panel-content { */
+			/* padding-block: 110px 70px; */
+			/* margin-block: 75px 0; */
+			/* padding-block-end: 80px; */
+		/* } */
 	}
 </style>

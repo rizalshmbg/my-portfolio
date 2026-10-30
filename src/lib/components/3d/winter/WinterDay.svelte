@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
-	import { gsap } from 'gsap';
 
 	import Sky from './day-scene/Sky.svelte';
 	import Sun from './day-scene/Sun.svelte';
@@ -18,38 +17,26 @@
 	import SnowTrees from './day-scene/SnowTrees.svelte';
 	import Snowfall from './day-scene/Snowfall.svelte';
 
-	interface Props {
-		progress: number;
-	}
-
-	let { progress }: Props = $props();
-
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
-	let setCameraProgress = $state<((value: number) => void) | undefined>(undefined);
 
 	let updateClouds: ((time: number) => void) | undefined;
 	let updateWolf: ((time: number) => void) | undefined;
 	let updateSnowfall: ((time: number) => void) | undefined;
-
-	$effect(() => {
-		setCameraProgress?.(progress);
-	});
 
 	onMount(() => {
 		if (!canvas) return;
 
 		const currentCanvas = canvas;
 
-		// 1. Membuat scene
+		// 1. CREATE SCENE
 		const currentScene = new THREE.Scene();
-
 		currentScene.background = new THREE.Color('#83c5f7');
 		currentScene.fog = new THREE.Fog('#83c5f7', 45, 100);
 
 		scene = currentScene;
 
-		// 2. Membuat kamera
+		// 2. CREATE CAMERA
 		const camera = new THREE.PerspectiveCamera(
 			45,
 			currentCanvas.clientWidth / currentCanvas.clientHeight,
@@ -60,79 +47,16 @@
 		const cameraBasePosition = new THREE.Vector3(0, 2, 8);
 		const cameraBaseTarget = new THREE.Vector3(0, 4, -10);
 
-		const cameraState = {
-			x: cameraBasePosition.x,
-			y: cameraBasePosition.y,
-			z: cameraBasePosition.z,
-			targetX: cameraBaseTarget.x,
-			targetY: cameraBaseTarget.y,
-			targetZ: cameraBaseTarget.z
-		};
-
-		// 3. Animasi kamera menggunakan GSAP
-		const cameraTimeline = gsap.timeline({
-			paused: true,
-			onUpdate: () => {
-				cameraBasePosition.set(cameraState.x, cameraState.y, cameraState.z);
-
-				cameraBaseTarget.set(cameraState.targetX, cameraState.targetY, cameraState.targetZ);
-			}
-		});
-
-		cameraTimeline
-			// Home → About: mendekati kabin
-			.to(cameraState, {
-				x: -12,
-				y: 2,
-				z: -12,
-				targetX: -18,
-				targetY: 3,
-				targetZ: -25,
-				duration: 1,
-				ease: 'none'
-			})
-			// About → Experience: mendekati kawanan serigala
-			.to(cameraState, {
-				x: 6,
-				y: 2,
-				z: -13,
-				targetX: 6,
-				targetY: 1,
-				targetZ: -21,
-				duration: 1,
-				ease: 'none'
-			})
-			// Experience → Contact: mengarah ke langit
-			.to(cameraState, {
-				x: -7,
-				y: 16,
-				z: -29,
-				targetX: -7,
-				targetY: 20,
-				targetZ: -50,
-				duration: 1,
-				ease: 'none'
-			});
-
-		setCameraProgress = (value: number) => {
-			const normalizedProgress = THREE.MathUtils.clamp(value, 0, 1);
-
-			cameraTimeline.progress(normalizedProgress);
-		};
-
-		setCameraProgress(progress);
-
 		camera.position.copy(cameraBasePosition);
 		camera.lookAt(cameraBaseTarget);
 
-		// 4. Menyiapkan parallax mouse
+		// 3. CREATE PARALLAX MOUSE
 		const mouse = new THREE.Vector2(0, 0);
 		const smoothMouse = new THREE.Vector2(0, 0);
-
 		const cameraTargetPosition = new THREE.Vector3();
 		const lookTarget = new THREE.Vector3();
 
-		// 5. Membuat renderer
+		// 4. CREATE RENDER CANVAS
 		const renderer = new THREE.WebGLRenderer({
 			canvas: currentCanvas,
 			antialias: true
@@ -140,22 +64,16 @@
 
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;
-
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
-
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		// 6. Pencahayaan untuk suasana siang
-
-		// Cahaya dasar agar area yang teduh tetap terlihat.
+		// 5. CREATE AMBIENT LIGHT
 		const ambientLight = new THREE.AmbientLight('#b9cce3', 2);
-
 		currentScene.add(ambientLight);
 
+		// 6. CREATE SUN LIGHT
 		const sunlight = new THREE.DirectionalLight('#dce8f5', 2);
-
 		sunlight.position.set(-5, 20, -50);
 		sunlight.target.position.set(0, 0, -10);
 
@@ -176,12 +94,11 @@
 		currentScene.add(sunlight);
 		currentScene.add(sunlight.target);
 
-		// Fill light untuk mempertahankan detail salju.
+		// 7. CREATE HEMISPHERE LIGHT
 		const hemisphereLight = new THREE.HemisphereLight('#c5d9f0', '#8495aa', 1.5);
-
 		currentScene.add(hemisphereLight);
 
-		// 7. Animasi dan rendering
+		// 8. ANIMATION AND RENDERING
 		let animationFrame = 0;
 
 		const clock = new THREE.Clock();
@@ -266,14 +183,11 @@
 			currentScene.remove(ambientLight);
 			currentScene.remove(hemisphereLight);
 
-			sunlight.dispose();
-
 			renderer.dispose();
-			cameraTimeline.kill();
 
-			setCameraProgress = undefined;
 			updateClouds = undefined;
 			updateWolf = undefined;
+			updateSnowfall = undefined;
 
 			scene = null;
 		};

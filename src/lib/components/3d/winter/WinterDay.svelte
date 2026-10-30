@@ -17,6 +17,12 @@
 	import SnowTrees from './day-scene/SnowTrees.svelte';
 	import Snowfall from './day-scene/Snowfall.svelte';
 
+	interface Props {
+		onThemeChange: (theme: 'dark' | 'light') => void;
+	}
+
+	let { onThemeChange }: Props = $props();
+
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
 
@@ -68,11 +74,73 @@
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		// 5. CREATE AMBIENT LIGHT
+		// 5. SUN CLICK AND HOVER: USING RAYCASTER FOR INTERACTION CLICK
+		const raycaster = new THREE.Raycaster();
+		const pointer = new THREE.Vector2();
+
+		// 6. HANDLE SCENE CLICK AND HOVER
+		function handleSceneClick(event: MouseEvent) {
+			const rect = currentCanvas.getBoundingClientRect();
+
+			if (!rect.width || !rect.height) return;
+
+			pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+			raycaster.setFromCamera(pointer, camera);
+
+			const intersections = raycaster.intersectObjects(currentScene.children, true);
+
+			const clickedObject = intersections.find(
+				(intersection) => intersection.object.userData.themeToggle === true
+			);
+
+			if (!clickedObject) return;
+
+			// Pindah dari tema siang ke tema malam.
+			onThemeChange('dark');
+		}
+
+		currentCanvas.addEventListener('click', handleSceneClick);
+
+		let isSunHovered = false;
+
+		function handleSceneHover(event: MouseEvent) {
+			const rect = currentCanvas.getBoundingClientRect();
+
+			if (!rect.width || !rect.height) return;
+
+			pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+			raycaster.setFromCamera(pointer, camera);
+
+			const intersections = raycaster.intersectObjects(currentScene.children, true);
+
+			const isHoveringSun = intersections.some(
+				(intersection) => intersection.object.userData.themeToggle === true
+			);
+
+			if (isHoveringSun !== isSunHovered) {
+				isSunHovered = isHoveringSun;
+
+				currentCanvas.style.cursor = isSunHovered ? 'pointer' : 'default';
+
+				window.dispatchEvent(
+					new CustomEvent('sun-hover', {
+						detail: { hovered: isSunHovered }
+					})
+				);
+			}
+		}
+
+		currentCanvas.addEventListener('mousemove', handleSceneHover);
+
+		// 7. CREATE AMBIENT LIGHT
 		const ambientLight = new THREE.AmbientLight('#b9cce3', 2);
 		currentScene.add(ambientLight);
 
-		// 6. CREATE SUN LIGHT
+		// 8. CREATE SUN LIGHT
 		const sunlight = new THREE.DirectionalLight('#dce8f5', 2);
 		sunlight.position.set(-5, 20, -50);
 		sunlight.target.position.set(0, 0, -10);
@@ -94,11 +162,11 @@
 		currentScene.add(sunlight);
 		currentScene.add(sunlight.target);
 
-		// 7. CREATE HEMISPHERE LIGHT
+		// 9. CREATE HEMISPHERE LIGHT
 		const hemisphereLight = new THREE.HemisphereLight('#c5d9f0', '#8495aa', 1.5);
 		currentScene.add(hemisphereLight);
 
-		// 8. ANIMATION AND RENDERING
+		// 10. ANIMATION AND RENDERING
 		let animationFrame = 0;
 
 		const clock = new THREE.Clock();
@@ -177,6 +245,10 @@
 
 			window.removeEventListener('resize', resize);
 			window.removeEventListener('mousemove', handleMouseMove);
+
+			currentCanvas.removeEventListener('click', handleSceneClick);
+			currentCanvas.removeEventListener('mousemove', handleSceneHover);
+			currentCanvas.style.cursor = 'default';
 
 			currentScene.remove(sunlight);
 			currentScene.remove(sunlight.target);

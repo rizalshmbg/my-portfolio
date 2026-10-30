@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
 	import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+	import { gsap } from 'gsap';
 
 	interface Props {
 		scene: THREE.Scene;
@@ -19,6 +20,8 @@
 		const glowSprites: THREE.Sprite[] = [];
 		const glowMaterials: THREE.SpriteMaterial[] = [];
 		const glowTextures: THREE.CanvasTexture[] = [];
+		const glowBaseOpacities: number[] = [];
+		const glowBaseScales: THREE.Vector3[] = [];
 
 		// Posisi matahari mengikuti Moon.svelte.
 		const sunPosition = new THREE.Vector3(-7, 20, -50);
@@ -78,7 +81,6 @@
 			});
 
 			const sprite = new THREE.Sprite(material);
-
 			sprite.position.set(sunPosition.x, sunPosition.y, positionZ);
 
 			sprite.scale.set(size, size, 1);
@@ -88,9 +90,50 @@
 
 			glowSprites.push(sprite);
 			glowMaterials.push(material);
+			glowBaseOpacities.push(opacity);
+			glowBaseScales.push(sprite.scale.clone());
 
 			return sprite;
 		}
+
+		/**
+		 * Membuat sprite glow ketika di hover
+		 */
+		let isSunHovered = false;
+		function setSunHovered(hovered: boolean) {
+			isSunHovered = hovered;
+
+			glowSprites.forEach((sprite, index) => {
+				const material = glowMaterials[index];
+				const baseOpacity = glowBaseOpacities[index];
+				const baseScale = glowBaseScales[index];
+
+				if (!material || !baseScale) return;
+
+				gsap.killTweensOf(material);
+				gsap.killTweensOf(sprite.scale);
+
+				gsap.to(material, {
+					opacity: hovered ? Math.min(baseOpacity * 1.8, 1) : baseOpacity,
+					duration: 0.35,
+					ease: 'power2.out'
+				});
+
+				gsap.to(sprite.scale, {
+					x: hovered ? baseScale.x * 1.12 : baseScale.x,
+					y: hovered ? baseScale.y * 1.12 : baseScale.y,
+					duration: 0.4,
+					ease: 'power2.out'
+				});
+			});
+		}
+
+		function handleSunHoverEvent(event: Event) {
+			const customEvent = event as CustomEvent<{ hovered: boolean }>;
+			setSunHovered(customEvent.detail.hovered);
+		}
+
+		window.addEventListener('sun-hover', handleSunHoverEvent);
 
 		/**
 		 * Memuat model matahari.
@@ -107,6 +150,12 @@
 				}
 
 				sun = loadedSun;
+
+				loadedSun.traverse((child) => {
+					if (child instanceof THREE.Mesh) {
+						child.userData.themeToggle = true;
+					}
+				});
 
 				// Mempertahankan model, tetapi membuat warna permukaannya
 				// lebih merata dan hangat.
@@ -185,6 +234,10 @@
 				]);
 
 				createGlow(outerGlowTexture, 10, 0.5, -49.2, 4);
+
+				if (isSunHovered) {
+					setSunHovered(true);
+				}
 			},
 			undefined,
 			(error) => {
@@ -217,6 +270,16 @@
 		return () => {
 			isDisposed = true;
 
+			window.removeEventListener('sun-hover', handleSunHoverEvent);
+
+			for (const material of glowMaterials) {
+				gsap.killTweensOf(material);
+			}
+
+			for (const sprite of glowSprites) {
+				gsap.killTweensOf(sprite.scale);
+			}
+
 			if (sun) {
 				scene.remove(sun);
 				disposeSun(sun);
@@ -238,6 +301,8 @@
 			glowSprites.length = 0;
 			glowMaterials.length = 0;
 			glowTextures.length = 0;
+			glowBaseOpacities.length = 0;
+			glowBaseScales.length = 0;
 		};
 	});
 </script>

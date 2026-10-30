@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import * as THREE from 'three';
+	import { gsap } from 'gsap';
 
 	interface Props {
 		scene: THREE.Scene;
@@ -54,6 +55,7 @@
 
 		const moon = new THREE.Mesh(moonGeometry, moonMaterial);
 		moon.scale.set(1, 1, 1);
+		moon.userData.themeToggle = true;
 		moonGroup.add(moon);
 
 		// Cahaya bulan yang menerangi lingkungan sekitar.
@@ -61,6 +63,7 @@
 		moonLight.position.set(-1, 0, 0);
 		moonLight.castShadow = false;
 		moonGroup.add(moonLight);
+		const moonBaseIntensity = moonLight.intensity;
 
 		// Cahaya halo di sekitar bulan
 		const glowCanvas = document.createElement('canvas');
@@ -102,12 +105,53 @@
 
 		moonGroup.add(glow);
 
+		const glowBaseOpacity = glowMaterial.opacity;
+		const glowBaseScale = glow.scale.clone();
+
 		// Posisi bulan di langit
 		moonGroup.position.set(-7, 20, -50);
 
 		scene.add(moonGroup);
 
+		function setMoonHovered(hovered: boolean) {
+			gsap.killTweensOf(glowMaterial);
+			gsap.killTweensOf(glow.scale);
+			gsap.killTweensOf(moonLight);
+
+			gsap.to(glowMaterial, {
+				opacity: hovered ? Math.min(glowBaseOpacity * 1.5, 1) : glowBaseOpacity,
+				duration: 0.35,
+				ease: 'power2.out'
+			});
+
+			gsap.to(glow.scale, {
+				x: hovered ? glowBaseScale.x * 1.12 : glowBaseScale.x,
+				y: hovered ? glowBaseScale.y * 1.12 : glowBaseScale.y,
+				duration: 0.4,
+				ease: 'power2.out'
+			});
+
+			gsap.to(moonLight, {
+				intensity: hovered ? moonBaseIntensity * 1.25 : moonBaseIntensity,
+				duration: 0.35,
+				ease: 'power2.out'
+			});
+		}
+
+		function handleMoonHoverEvent(event: Event) {
+			const customEvent = event as CustomEvent<{ hovered: boolean }>;
+			setMoonHovered(customEvent.detail.hovered);
+		}
+
+		window.addEventListener('moon-hover', handleMoonHoverEvent);
+
 		return () => {
+			window.removeEventListener('moon-hover', handleMoonHoverEvent);
+
+			gsap.killTweensOf(glowMaterial);
+			gsap.killTweensOf(glow.scale);
+			gsap.killTweensOf(moonLight);
+
 			scene.remove(moonGroup);
 
 			moonGeometry.dispose();

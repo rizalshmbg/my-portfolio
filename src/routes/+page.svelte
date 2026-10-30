@@ -13,9 +13,17 @@
 <main class="world" data-theme={theme}>
 	<div class="world-scene">
 		{#if theme === 'dark'}
-			<WinterNight />
+			<WinterNight
+				onThemeChange={(nextTheme) => {
+					theme = nextTheme;
+				}}
+			/>
 		{:else}
-			<WinterDay />
+			<WinterDay
+				onThemeChange={(nextTheme) => {
+					theme = nextTheme;
+				}}
+			/>
 		{/if}
 	</div>
 </main>

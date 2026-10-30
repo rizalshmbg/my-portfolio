@@ -17,6 +17,12 @@
 	import SnowTrees from './night-scene/SnowTrees.svelte';
 	import Snowfall from './night-scene/Snowfall.svelte';
 
+	interface Props {
+		onThemeChange: (theme: 'dark' | 'light') => void;
+	}
+
+	let { onThemeChange }: Props = $props();
+
 	let canvas = $state<HTMLCanvasElement | undefined>();
 	let scene = $state<THREE.Scene | null>(null);
 
@@ -67,11 +73,77 @@
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-		// 5. CREATE AMBIENT LIGHT
+		// 5. MOON CLICK AND HOVER: USING RAYCASTER FOR INTERACTION CLICK
+		const raycaster = new THREE.Raycaster();
+		const pointer = new THREE.Vector2();
+
+		// 6. HANDLE SCENE CLICK AND HOVER
+		function handleSceneClick(event: MouseEvent) {
+			const rect = currentCanvas.getBoundingClientRect();
+
+			if (!rect.width || !rect.height) return;
+
+			// Koordinat mouse relatif terhadap canvas.
+			pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+			raycaster.setFromCamera(pointer, camera);
+
+			const intersections = raycaster.intersectObjects(currentScene.children, true);
+
+			// Cari objek interaktif terdekat yang terkena klik.
+			const clickedObject = intersections.find(
+				(intersection) => intersection.object.userData.themeToggle === true
+			);
+
+			if (!clickedObject) return;
+
+			// Pindah dari tema malam ke tema siang.
+			onThemeChange('light');
+		}
+
+		currentCanvas.addEventListener('click', handleSceneClick);
+
+		let isMoonHovered = false;
+
+		function handleSceneHover(event: MouseEvent) {
+			const rect = currentCanvas.getBoundingClientRect();
+
+			if (!rect.width || !rect.height) return;
+
+			pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
+
+			raycaster.setFromCamera(pointer, camera);
+
+			const intersections = raycaster.intersectObjects(currentScene.children, true);
+
+			const isHoveringMoon = intersections.some(
+				(intersection) =>
+					intersection.object instanceof THREE.Mesh &&
+					intersection.object.userData.themeToggle === true
+			);
+
+			if (isHoveringMoon !== isMoonHovered) {
+				isMoonHovered = isHoveringMoon;
+
+				currentCanvas.style.cursor = isMoonHovered ? 'pointer' : 'default';
+
+				window.dispatchEvent(
+					new CustomEvent('moon-hover', {
+						detail: { hovered: isMoonHovered }
+					})
+				);
+			}
+		}
+
+		currentCanvas.addEventListener('mousemove', handleSceneHover);
+
+		// 7. CREATE AMBIENT LIGHT
 		const ambientLight = new THREE.AmbientLight('#a0abc0', 1);
 		currentScene.add(ambientLight);
 
-		// 6. CREATE MOON LIGHT
+		// 8. CREATE MOON LIGHT
 		const moonLight = new THREE.DirectionalLight('#f5dfbd', 1);
 		moonLight.position.set(-5, 20, -50);
 		moonLight.target.position.set(0, 0, -10);
@@ -93,13 +165,13 @@
 		currentScene.add(moonLight);
 		currentScene.add(moonLight.target);
 
-		// 7. CREATE HEMISPHERE LIGHT
+		// 9. CREATE HEMISPHERE LIGHT
 		const snowFillLight = new THREE.PointLight('#9eafcf', 12, 28, 2);
 		snowFillLight.position.set(8, 5, -20);
 		snowFillLight.castShadow = false;
 		currentScene.add(snowFillLight);
 
-		// 8. ANIMATION AND RENDERING
+		// 10. ANIMATION AND RENDERING
 		let animationFrame = 0;
 
 		const clock = new THREE.Clock();
@@ -178,6 +250,10 @@
 
 			window.removeEventListener('resize', resize);
 			window.removeEventListener('mousemove', handleMouseMove);
+
+			currentCanvas.removeEventListener('click', handleSceneClick);
+			currentCanvas.removeEventListener('mousemove', handleSceneHover);
+			currentCanvas.style.cursor = 'default';
 
 			currentScene.remove(moonLight);
 			currentScene.remove(moonLight.target);

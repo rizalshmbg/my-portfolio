@@ -31,6 +31,8 @@
 	let updateWolf: ((time: number) => void) | undefined;
 	let updateSnowfall: ((time: number) => void) | undefined;
 
+	const isMobile = () => window.matchMedia('(max-width: 600px)').matches;
+
 	onMount(() => {
 		if (!canvas) return;
 
@@ -45,14 +47,14 @@
 
 		// 2. CREATE CAMERA
 		const camera = new THREE.PerspectiveCamera(
-			45,
+			isMobile() ? 60 : 45,
 			currentCanvas.clientWidth / currentCanvas.clientHeight,
 			0.1,
 			100
 		);
 
-		const cameraBasePosition = new THREE.Vector3(0, 2, 8);
-		const cameraBaseTarget = new THREE.Vector3(0, 4, -10);
+		const cameraBasePosition = isMobile() ? new THREE.Vector3(3, 3, 8) : new THREE.Vector3(0, 2, 8);
+		const cameraBaseTarget = isMobile() ? new THREE.Vector3(3, 4, -10) : new THREE.Vector3(0, 4, -10);
 
 		camera.position.copy(cameraBasePosition);
 		camera.lookAt(cameraBaseTarget);
@@ -233,6 +235,7 @@
 			if (!width || !height) return;
 
 			camera.aspect = width / height;
+			camera.fov = isMobile() ? 60 : 45;
 			camera.updateProjectionMatrix();
 
 			renderer.setSize(width, height, false);

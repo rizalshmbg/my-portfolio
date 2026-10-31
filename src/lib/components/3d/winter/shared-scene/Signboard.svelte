@@ -13,8 +13,10 @@
 	onMount(() => {
 		let disposed = false;
 		let signboard: THREE.Group | null = null;
-		let candleLight: THREE.PointLight | null = null;
-		let lowerLight: THREE.PointLight | null = null;
+		let lanternLight: THREE.PointLight | null = null;
+		let lanternGroundLight: THREE.SpotLight | null = null;
+		let lanternGlass: THREE.Mesh | null = null;
+		let lanternGlassMaterials: THREE.MeshStandardMaterial[] = [];
 
 		const loader = new GLTFLoader();
 
@@ -51,37 +53,73 @@
 				}
 
 				signboard.traverse((object) => {
-					if (object instanceof THREE.Mesh) {
-						object.castShadow = true;
-						object.receiveShadow = true;
+					if (!(object instanceof THREE.Mesh)) return;
+
+					object.castShadow = true;
+					object.receiveShadow = true;
+
+					const materials = Array.isArray(object.material) ? object.material : [object.material];
+
+					if (materials.some((material) => material.name === 'LanternGlass')) {
+						lanternGlass = object;
+
+						lanternGlassMaterials = materials.filter(
+							(material): material is THREE.MeshStandardMaterial =>
+								material instanceof THREE.MeshStandardMaterial && material.name === 'LanternGlass'
+						);
+
+						for (const material of lanternGlassMaterials) {
+							material.transparent = true;
+							material.opacity = 0.4;
+							material.roughness = 0.15;
+							material.depthWrite = false;
+
+							// Warna kaca ketika lampu mati.
+							material.color.set('#ffffff');
+							material.emissive.set('#000000');
+							material.emissiveIntensity = 0;
+						}
 					}
 				});
 
 				scene.add(signboard);
 
-				let lanternObject: THREE.Object3D | null = null;
-
-				signboard.traverse((object) => {
-					if (object.name === 'harvest_lantern004') {
-						lanternObject = object;
-					}
-				});
-
-				if (lanternObject  && candleEnabled) {
+				if (lanternGlass && candleEnabled) {
 					signboard.updateMatrixWorld(true);
 
-					const lanternBox = new THREE.Box3().setFromObject(lanternObject);
-					const lanternCenter = lanternBox.getCenter(new THREE.Vector3());
+					const glassBox = new THREE.Box3().setFromObject(lanternGlass);
+					const glassCenter = glassBox.getCenter(new THREE.Vector3());
 
-					candleLight = new THREE.PointLight(0xffb45c, 6, 7, 1.5);
-					candleLight.position.set(lanternCenter.x, lanternCenter.y, lanternCenter.z);
-					candleLight.castShadow = false;
-					scene.add(candleLight);
+					lanternLight = new THREE.PointLight(0xffb52e, 8, 4, 2);
+					lanternLight.position.copy(glassCenter);
+					lanternLight.castShadow = false;
+					scene.add(lanternLight);
 
-					lowerLight = new THREE.PointLight(0xffa64d, 4, 7, 1.5);
-					lowerLight.position.set(lanternCenter.x, lanternCenter.y - 0.8, lanternCenter.z);
-					lowerLight.castShadow = false;
-					scene.add(lowerLight);
+					lanternGroundLight = new THREE.SpotLight(0xffc45c, 15, 5, Math.PI / 7, 0.8, 2);
+					lanternGroundLight.position.set(glassCenter.x, glassCenter.y - 0.3, glassCenter.z);
+					lanternGroundLight.target.position.set(glassCenter.x, glassCenter.y - 3, glassCenter.z);
+					lanternGroundLight.castShadow = false;
+					scene.add(lanternGroundLight);
+					scene.add(lanternGroundLight.target);
+
+					// Kaca berubah warna ketika lampu menyala.
+					for (const material of lanternGlassMaterials) {
+						material.color.set('#ffdf57');
+						material.emissive.set('#ffb300');
+						material.emissiveIntensity = 4;
+
+						material.transparent = true;
+						material.opacity = 0.9;
+						material.roughness = 0.2;
+						material.depthWrite = false;
+					}
+
+					console.log('[Signboard] Lantern menyala:', {
+						glassName: lanternGlass.name,
+						position: lanternLight.position.toArray()
+					});
+				} else if (!lanternGlass) {
+					console.warn('[Signboard] Mesh dengan material LanternGlass tidak ditemukan.');
 				}
 
 				console.info('[Signboard] Model berhasil dimuat.');
@@ -97,29 +135,23 @@
 		return () => {
 			disposed = true;
 
-			if (!signboard) {
-				return;
+			if (lanternLight) {
+				scene.remove(lanternLight);
+				lanternLight.dispose();
+				lanternLight = null;
 			}
 
-			if (candleLight) {
-				scene.remove(candleLight);
-				candleLight.dispose();
-				candleLight = null;
+			if (lanternGroundLight) {
+				scene.remove(lanternGroundLight);
+				scene.remove(lanternGroundLight.target);
+				lanternGroundLight.dispose();
+				lanternGroundLight = null;
 			}
 
-			if (lowerLight) {
-				scene.remove(lowerLight);
-				lowerLight.dispose();
-				lowerLight = null;
+			if (signboard) {
+				scene.remove(signboard);
+				signboard = null;
 			}
-
-			// Lepaskan model dari scene.
-			scene.remove(signboard);
-
-			// Jangan dispose resource GLB di sini.
-			// Geometri, material, dan tekstur mungkin digunakan bersama
-			// oleh komponen atau objek lain.
-			signboard = null;
 		};
 	});
 </script>

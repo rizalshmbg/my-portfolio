@@ -16,6 +16,7 @@
 	import Wolf from './day-scene/Wolf.svelte';
 	import SnowTrees from './day-scene/SnowTrees.svelte';
 	import Snowfall from './day-scene/Snowfall.svelte';
+	import Signboard from './shared-scene/Signboard.svelte';
 
 	interface Props {
 		onThemeChange: (theme: 'dark' | 'light') => void;
@@ -289,6 +290,7 @@
 		/>
 		<SnowTrees {scene} />
 		<Snowfall {scene} registerUpdate={(callback) => (updateSnowfall = callback)} />
+		<Signboard {scene} candleEnabled={false} />
 	{/if}
 </div>
 

@@ -18,6 +18,11 @@
 	import Snowfall from './night-scene/Snowfall.svelte';
 	import Signboard from './shared-scene/Signboard.svelte';
 
+	import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+	import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+	import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+	import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
 	interface Props {
 		onThemeChange: (theme: 'dark' | 'light') => void;
 	}
@@ -53,7 +58,9 @@
 		);
 
 		const cameraBasePosition = isMobile() ? new THREE.Vector3(3, 3, 8) : new THREE.Vector3(0, 2, 8);
-		const cameraBaseTarget = isMobile() ? new THREE.Vector3(3, 4, -10) : new THREE.Vector3(0, 4, -10);
+		const cameraBaseTarget = isMobile()
+			? new THREE.Vector3(3, 4, -10)
+			: new THREE.Vector3(0, 4, -10);
 
 		camera.position.copy(cameraBasePosition);
 		camera.lookAt(cameraBaseTarget);
@@ -75,6 +82,24 @@
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 		renderer.setSize(currentCanvas.clientWidth, currentCanvas.clientHeight, false);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+		// 4.1. POST-PROCESSING: BLOOM
+		const composer = new EffectComposer(renderer);
+		const renderPass = new RenderPass(currentScene, camera);
+
+		composer.addPass(renderPass);
+
+		const bloomPass = new UnrealBloomPass(
+			new THREE.Vector2(currentCanvas.clientWidth, currentCanvas.clientHeight),
+			0.1,
+			0.1,
+			1
+		);
+
+		composer.addPass(bloomPass);
+
+		const outputPass = new OutputPass();
+		composer.addPass(outputPass);
 
 		// 5. MOON CLICK AND HOVER: USING RAYCASTER FOR INTERACTION CLICK
 		const raycaster = new THREE.Raycaster();
@@ -229,7 +254,7 @@
 			camera.position.lerp(cameraTargetPosition, smoothing);
 			camera.lookAt(lookTarget);
 
-			renderer.render(currentScene, camera);
+			composer.render(delta);
 		}
 
 		animate();
@@ -245,6 +270,7 @@
 			camera.updateProjectionMatrix();
 
 			renderer.setSize(width, height, false);
+			composer.setSize(width, height);
 		}
 
 		window.addEventListener('resize', resize);
@@ -264,6 +290,7 @@
 			currentScene.remove(ambientLight);
 			currentScene.remove(snowFillLight);
 
+			composer.dispose();
 			renderer.dispose();
 
 			updateStars = undefined;
